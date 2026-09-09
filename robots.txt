@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://anishatl.github.io/Anish-Portfolio/sitemap.xml
