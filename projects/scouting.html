@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strategy &amp; scouting system — Anish Bhatia</title>
+<meta name="description" content="A scouting and analytics pipeline for FRC Team 1771 whose head-to-head predictor outperformed FRC's global standardized match predictor, processing 100,000+ data points a year.">
+<link rel="canonical" href="https://anishatl.github.io/Anish-Portfolio/projects/scouting.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Strategy &amp; scouting system">
+<meta property="og:description" content="A head-to-head match predictor that outperformed FRC's global standardized predictor, on 100,000+ scouting data points a year.">
+<meta property="og:url" content="https://anishatl.github.io/Anish-Portfolio/projects/scouting.html">
+<meta property="og:image" content="https://anishatl.github.io/Anish-Portfolio/assets/img/og-blitz-electrical.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="shell">
+  <div class="marker" aria-hidden="true">02</div>
+  <div class="content" id="main">
+
+    <header class="masthead">
+      <p class="meta"><a href="../index.html#work">Anish Bhatia</a> &nbsp;/&nbsp; Work</p>
+      <h1 class="name">Strategy &amp; scouting system</h1>
+      <p class="role">FRC Team 1771 &middot; 2022&ndash;2026</p>
+    </header>
+
+    <nav class="tabs" aria-label="Sections">
+      <ol>
+        <li><a class="tab" href="../index.html#work" aria-current="true"><span class="tick" aria-hidden="true"></span>Work</a></li>
+        <li><a class="tab" href="../index.html#about"><span class="tick" aria-hidden="true"></span>About</a></li>
+        <li><a class="tab" href="../index.html#experience"><span class="tick" aria-hidden="true"></span>Experience</a></li>
+        <li><a class="tab" href="../index.html#research"><span class="tick" aria-hidden="true"></span>Research</a></li>
+        <li><a class="tab" href="../index.html#contact"><span class="tick" aria-hidden="true"></span>Contact</a></li>
+      </ol>
+    </nav>
+
+    <section class="band">
+
+      <dl class="spec">
+        <div><dt>Role</dt><dd>Strategy lead; team and alliance captain; driver</dd></div>
+        <div><dt>Dates</dt><dd>Aug 2022 &ndash; May 2026</dd></div>
+        <div><dt>Stack</dt><dd>JotForm collection tools, Google Sheets analytics backend</dd></div>
+        <div><dt>Scale</dt><dd>100,000+ data points per year; 80+ scouts trained to run it live</dd></div>
+        <div><dt>Results</dt><dd>Curie Division champion and 4th overall, 2025 World Championship; #1-ranked autonomous robot in the world, 2024; three consecutive state championships, 2024&ndash;2026</dd></div>
+      </dl>
+
+      <p class="lede">My head-to-head predictor outperformed FRC&rsquo;s global standardized match predictor. That is the claim I care about most on this page, because it is measured against a real baseline that thousands of teams use rather than against nothing.</p>
+
+      <ul class="readings">
+        <li class="reading">
+          <div class="reading-val">100,000+</div>
+          <div class="reading-ctx">Data points processed per year</div>
+        </li>
+        <li class="reading">
+          <div class="reading-val">80+</div>
+          <div class="reading-ctx">Scouts trained to run the system live</div>
+        </li>
+      </ul>
+
+      <h2>The problem</h2>
+
+      <p>An FRC alliance selection is a draft you get one shot at, made from incomplete information about sixty-odd robots you have watched for two minutes each. Teams handle this with scouting: humans in the stands recording what every robot does, every match. The failure mode is not collecting the data. It is that the data arrives noisy, late, and in a shape nobody can make a decision from before the draft closes.</p>
+
+      <p>I built the team&rsquo;s strategy department from scratch to close that gap &mdash; collection, processing, and the tools that turn it into a call someone can make on the spot.</p>
+
+      <h2>Collection</h2>
+
+      <p>I designed more than a dozen JotForm collection tools across four seasons &mdash; seven for 2024 (three qualitative, four quantitative), eight for 2025, eleven for 2026 &mdash; and grew them season over season as we learned which fields people actually filled in correctly under time pressure.</p>
+
+      <p>Everything feeds a Google Sheets backend split into a raw layer and a processed layer. The separation is what makes the system survivable: raw submissions are never edited, so a processing bug is a bug in a formula rather than a loss of the underlying record, and a scout entering something wrong cannot corrupt anything downstream of their own row.</p>
+
+      <figure class="fig wide">
+        <img src="../assets/img/scouting-sheets-formula.jpg" width="1100" height="219" loading="lazy"
+             alt="The Google Sheets analytics backend: a per-team success-rate column computed by a nested ROUND, IFERROR, SUM and FILTER formula over the raw data sheet, alongside amp and speaker success percentages, average autonomous and teleop pieces scored, and interquartile range.">
+        <figcaption>Fig. 1 &mdash; Processed layer: per-team success rate, scoring averages and IQR computed across the raw match records</figcaption>
+      </figure>
+
+      <h2>Analysis tools</h2>
+
+      <p>On top of the processed layer I built the tools we actually made calls from:</p>
+
+      <ul>
+        <li><b>Head-to-head predictor</b> &mdash; predicted match outcomes from the accumulated per-team records, and outperformed the standardized FRC match predictor used globally.</li>
+        <li><b>Top 75</b> &mdash; ranked every team in our division by success rate, interquartile range and maximums. Ranking on IQR alongside averages is the part that mattered: for alliance selection, a robot that scores moderately every match is often worth more than one that averages higher on a mix of blowouts and breakdowns.</li>
+        <li><b>Auton by match / team</b> &mdash; pulled autonomous routine data by driver station, so we could tell whether a robot&rsquo;s autonomous would conflict with ours before we picked it.</li>
+      </ul>
+
+      <p>These fed alliance selection and match strategy at every event from 2023 on, including the three consecutive state championships and the Curie Division championship in 2025. I drove Blitz in competition while continuing to make strategy calls live.</p>
+
+      <h2>Training</h2>
+
+      <p>The system is only as good as the eighty-plus people running it in the stands, so training was not a side task. I taught more than 200 students across three years &mdash; what the game rewards, how to record an observation consistently, and how the hardware and software decisions on our own robot follow from game-theory calls we make before the season starts.</p>
+
+      <div class="aside-note">
+        <h3>What I would change</h3>
+        <p>A Google Sheets backend was the right call for a team where the next maintainer had to be able to open it and understand it. It is also the ceiling on this project: there is no schema enforcement, so a renamed column is a silent wrong answer rather than an error, and every correctness guarantee lives in formulas that no one can test in isolation.</p>
+        <p>I would keep collection where it is and move the processed layer to a real database with typed columns and a migration path, then keep a Sheets view on top of it so the tool a scout opens does not change. The mistake I made was treating &ldquo;everyone can read it&rdquo; and &ldquo;it is a spreadsheet&rdquo; as the same requirement.</p>
+      </div>
+
+      <a class="back" href="../index.html#work">Back to work</a>
+
+      <footer class="foot">
+        <p>Anish Bhatia &middot; Sugar Hill, Georgia &middot; <a href="mailto:anishb.atl@gmail.com">anishb.atl@gmail.com</a></p>
+      </footer>
+
+    </section>
+  </div>
+</div>
+
+</body>
+</html>
