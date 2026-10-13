@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beyond the Scan — Anish Bhatia</title>
+<meta name="description" content="Benchmarking five ensemble machine learning architectures on rare brain tumour MRI classification under data scarcity.">
+<link rel="canonical" href="https://anishatl.github.io/Anish-Portfolio/projects/beyond-the-scan.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Beyond the Scan — Anish Bhatia">
+<meta property="og:description" content="Benchmarking five ensemble machine learning architectures on rare brain tumour MRI classification under data scarcity.">
+<meta property="og:url" content="https://anishatl.github.io/Anish-Portfolio/projects/beyond-the-scan.html">
+<meta property="og:image" content="https://anishatl.github.io/Anish-Portfolio/assets/img/og-preview.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<nav class="tabs" aria-label="Sections">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#research">Research</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#education">Education</a>
+      <a href="../index.html#contact">Contact</a>
+</nav>
+<div class="sheet">
+  <main class="col" id="main">
+    <a class="backlink" href="../index.html#work">← All work</a>
+    <header class="project-head">
+      <h1>Beyond the Scan</h1>
+      <table class="projectmeta"><tbody>
+        <tr><th scope="row">Context</th><td>AP Research</td></tr>
+        <tr><th scope="row">Role</th><td>Individual researcher</td></tr>
+        <tr><th scope="row">Dates</th><td>August 2025 – May 2026</td></tr>
+      </tbody></table>
+    </header>
+    <p class="lede">Medical imaging models are usually benchmarked on datasets far larger than a hospital studying a rare tumour will ever assemble. I asked a narrower question: as training data shrinks toward a realistic low-data scenario, which ensemble architectures degrade gracefully, and where is the floor?</p>
+    <div class="readings">
+      <div class="reading"><div class="reading-val">5</div><div class="reading-unit">Ensemble architectures benchmarked</div></div>
+      <div class="reading"><div class="reading-val">~28</div><div class="reading-unit">Training images: practical sufficiency threshold</div></div>
+    </div>
+    <section class="section">
+
+      <p>I benchmarked five ensemble architectures on rare brain tumour MRI
+      classification, progressively shrinking the training set and measuring
+      how each held up. DenseNet169-LIME-TumorNet proved the most robust under
+      scarcity, and the curves put a practical data-sufficiency threshold at
+      roughly 28 training images — below that, performance fell away sharply
+      enough that more data matters more than a better architecture.</p>
+
+      <p>The LIME component is doing real work here rather than sitting in the
+      name. In a clinical setting a classification that cannot be interrogated
+      is close to useless, because the person acting on it has to decide
+      whether to trust it on this particular scan. Carrying local
+      interpretability through the ensemble meant the robustness result and the
+      explainability result could be read together instead of traded against
+      each other.</p>
+
+      <p>The finding I care about is the threshold, not the leaderboard.
+      Knowing roughly where a model stops being data-limited tells a small
+      research group whether their next move is collecting more scans or
+      changing their approach — which is the decision they actually face.</p>
+
+      <p class="note">The full paper is being prepared for publication here.
+      Until it is posted, I am happy to send it on request by email.</p>
+    </section>
+    <div class="foot">
+      <span>Anish Bhatia — Atlanta, Georgia</span>
+      <span><a href="mailto:anishb.atl@gmail.com">anishb.atl@gmail.com</a></span>
+    </div>
+  </main>
+</div>
+</body>
+</html>
