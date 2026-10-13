@@ -43,15 +43,12 @@ Conventions worth keeping if you edit:
 - No rounded corners, no drop shadows, no skill bars or proficiency ratings.
 - Meta is set as small spec tables, not middle-dot strings.
 
-## Adding a headshot
+## Headshot
 
-Drop a square image at `assets/img/headshot.webp` (600×600 or larger), then add
-this inside `<header class="masthead">` in `index.html`:
-
-```html
-<img src="assets/img/headshot.webp" alt="Anish Bhatia" width="600" height="600"
-     style="width:120px;border:1px solid var(--ink);margin-bottom:14px">
-```
+`assets/img/headshot.webp` — square crop, shown at 132px on desktop and 96px on
+mobile, in the same 1px ink frame as every other figure. To replace it, drop in
+a new square image at the same path and update the `width`/`height` attributes
+on the `.headshot` img in `index.html`.
 
 ## Adding the resume
 
