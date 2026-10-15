@@ -134,18 +134,7 @@ img { max-width: 100%; height: auto; display: block; }
 .col > .worklist, .col > .artgrid { max-width: var(--plate); }
 
 /* ---------- masthead ---------- */
-.masthead {
-  padding-top: var(--unit);
-  max-width: var(--plate);
-  display: grid; grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0 40px; align-items: start;
-}
-.masthead-body { min-width: 0; }
-/* ID-photo treatment: square plate, same ink rule as every other figure */
-.headshot {
-  width: 132px; border: 1px solid var(--ink);
-  align-self: start; margin-top: 6px;
-}
+.masthead { padding-top: var(--unit); max-width: var(--plate); }
 .masthead h1 {
   font-size: clamp(34px, 5.4vw, 52px);
   line-height: 1.08;
@@ -413,9 +402,6 @@ figcaption {
   .sheet { margin-left: 0; padding: var(--unit) 16px calc(var(--unit) * 2); }
   .sheet::before { left: 0; opacity: .5; }
   .col { margin-left: 16px; }
-
-  .masthead { grid-template-columns: 1fr; gap: 0; }
-  .headshot { width: 96px; order: -1; margin: 0 0 16px; }
 
   .workitem { grid-template-columns: 1fr; gap: 12px; }
   .workitem img { max-width: 320px; }

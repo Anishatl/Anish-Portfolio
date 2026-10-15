@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Halloween family thrill coaster — Anish Bhatia</title>
-<meta name="description" content="Concept design and pitch for a Halloween witch-themed family thrill rollercoaster, led as a four-person team.">
+<title>The Witch Next Door — Anish Bhatia</title>
+<meta name="description" content="Concept, SolidWorks design and pitch for a Halloween-themed family thrill rollercoaster with an interactive target system. Winner of the Georgia Tech TPED Freshman Welcome Challenge.">
 <link rel="canonical" href="https://anishatl.github.io/Anish-Portfolio/projects/rollercoaster.html">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Halloween family thrill coaster — Anish Bhatia">
-<meta property="og:description" content="Concept design and pitch for a Halloween witch-themed family thrill rollercoaster, led as a four-person team.">
+<meta property="og:title" content="The Witch Next Door — Anish Bhatia">
+<meta property="og:description" content="Concept, SolidWorks design and pitch for a Halloween-themed family thrill rollercoaster with an interactive target system. Winner of the Georgia Tech TPED Freshman Welcome Challenge.">
 <meta property="og:url" content="https://anishatl.github.io/Anish-Portfolio/projects/rollercoaster.html">
 <meta property="og:image" content="https://anishatl.github.io/Anish-Portfolio/assets/img/og-preview.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -30,26 +30,141 @@
   <main class="col" id="main">
     <a class="backlink" href="../index.html#work">← All work</a>
     <header class="project-head">
-      <h1>Halloween family thrill coaster</h1>
+      <h1>The Witch Next Door</h1>
       <table class="projectmeta"><tbody>
         <tr><th scope="row">Team</th><td>Georgia Tech Theme Park Engineering Design</td></tr>
-        <tr><th scope="row">Context</th><td>Freshman Welcome Challenge</td></tr>
+        <tr><th scope="row">Context</th><td>Freshman Welcome Challenge — winning entry</td></tr>
         <tr><th scope="row">Role</th><td>Team lead, four-person team</td></tr>
-        <tr><th scope="row">Dates</th><td>September 2026</td></tr>
+        <tr><th scope="row">Dates</th><td>August – September 2026</td></tr>
       </tbody></table>
     </header>
-    <p class="lede">A concept design for a family thrill coaster in a Halloween-themed land, proposed for a fictional developer's park. I led a four-person team through concept, design and pitch for the Freshman Welcome Challenge.</p>
+    <p class="lede">A family thrill coaster for a Halloween-themed land, designed and pitched in about five weeks. I led a four-person team through the whole proposal — ride layout, SolidWorks design of the station and vehicle, the interactive target system, throughput and safety numbers, and the business case. It won the Freshman Welcome Challenge.</p>
+    <div class="readings">
+      <div class="reading"><div class="reading-val">1,440</div><div class="reading-unit">Guests per hour, design throughput</div></div>
+      <div class="reading"><div class="reading-val">90 s</div><div class="reading-unit">Ride duration</div></div>
+      <div class="reading"><div class="reading-val">2.5 g</div><div class="reading-unit">Maximum sustained load on a rider</div></div>
+      <div class="reading"><div class="reading-val">39 in</div><div class="reading-unit">Minimum rider height</div></div>
+    </div>
     <section class="section">
+      <h2>The ride</h2>
 
-      <p>We designed multiple ride elements in SolidWorks, including track and
-      cart, and built out the parts of a proposal that are easy to skip in a
-      student project: physical schematics, safety guidelines and an actual
-      business case. I also wrote the ride's storyline, which riders follow
-      from queue to brake run.</p>
-      <p>It is the least conventionally technical thing on this site and it
-      taught me the most about pitching. A ride concept has to survive both a
-      structural review and a room of people deciding whether anyone wants to
-      queue for it.</p>
+      <p>Riders board a pumpkin candy-basket car in Boo Junction, a 1950s
+      American small town, and ride up the lift hill toward the grand estate on
+      the edge of town for what looks like the last and best stop of the night's
+      trick-or-treating. The witch answers the door with a trick: a 15-foot
+      drop track drops the train into her manor, and the ride becomes a running
+      battle through the cursed house and out into the courtyard before the
+      town celebrates.</p>
+
+      <p>The story is the reason the ride system looks the way it does. The
+      trapdoor has to land on the beat where the witch answers, so the drop
+      track sits immediately after the lift rather than deeper in the layout.
+      The courtyard fight needs riders facing the targets with time to aim,
+      which is what the LSM launch into the courtyard section buys.</p>
+
+      <figure>
+  <img src="../assets/img/coaster-lifthill.webp" alt="Hand-drawn concept sketch of the lift hill rising toward the witch&#x27;s manor on the hill, with a graveyard and fence in the foreground" width="1200" height="1541" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 1</span> Concept for the approach: the lift hill climbs from the town fence line straight at the manor's front door.</figcaption>
+</figure>
+
+      <figure>
+  <img src="../assets/img/coaster-layout.webp" alt="Hand-drawn track layout schematic labelling the lift hill, haunted house facility, pre-show and drop track, launch, shooting section, brake section, unloading station and train storage" width="1400" height="1348" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 2</span> Track layout. Lift hill bottom right into the main haunted house facility, which holds the pre-show, drop track and launch; the shooting section runs across the top, then a brake section back down to unloading, with train storage off the bottom left.</figcaption>
+</figure>
+    </section>
+    <section class="section">
+      <h2>Ride system</h2>
+
+      <p>Four systems in sequence: separate load and unload stations, a chain
+      lift, the drop track, and an LSM launch. Splitting load from unload is
+      what makes the throughput target reachable — a train can be unloading
+      while the next one is already filling, so the station is not the
+      bottleneck the dispatch interval has to absorb.</p>
+
+      <div class="fig-pair">
+        <figure>
+  <img src="../assets/img/coaster-station.webp" alt="SolidWorks render of the coaster station, a covered timber pavilion with airgates along the platform" width="1400" height="815" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 3</span> Station structure in SolidWorks, themed as a covered timber pavilion to fit the 1950s small-town land.</figcaption>
+</figure>
+        <figure>
+  <img src="../assets/img/coaster-station-alt.webp" alt="Second SolidWorks render of the coaster station seen from the approach side" width="1200" height="871" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 4</span> Station from the approach side, showing the airgates along the platform edge.</figcaption>
+</figure>
+      </div>
+
+      <p>Three trains of six cars carry 12 passengers each. At roughly 120
+      cycles an hour that is about 1,440 guests per hour, with a ride duration
+      of about 90 seconds and a maximum of 2.5 g — inside what a family thrill
+      ride can hold while keeping the 39-inch height requirement.</p>
+    </section>
+    <section class="section">
+      <h2>Ride vehicle</h2>
+
+      <p>The car is a pumpkin candy basket: two passengers, each with a water
+      blaster aimed by a digital laser pointer the ride tracks for scoring.
+      Two sealed storage tanks ride with each car, one of candy and one of
+      raisins, replenished at an automatic refuel station so the dispatch
+      interval is never waiting on a person restocking a train.</p>
+
+      <div class="fig-pair">
+        <figure>
+  <img src="../assets/img/coaster-car.webp" alt="SolidWorks render of the pumpkin-shaped ride vehicle with two seats and mounted blasters" width="857" height="723" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 5</span> Vehicle in SolidWorks: two seats, restraints, and the blaster mounts on the leading edge.</figcaption>
+</figure>
+        <figure>
+  <img src="../assets/img/coaster-car-blasters.webp" alt="SolidWorks render of the ride vehicle showing blaster mounts and rear storage tanks" width="575" height="540" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 6</span> Blaster mounts and the candy and raisin storage tanks behind the seats.</figcaption>
+</figure>
+      </div>
+
+      <figure>
+  <img src="../assets/img/coaster-train-chassis.webp" alt="SolidWorks render of the train chassis underside showing bogies with road, upstop and guide wheels on the rails" width="1400" height="481" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 7</span> Train chassis and bogies on the track profile — road, upstop and guide wheels on each truck.</figcaption>
+</figure>
+    </section>
+    <section class="section">
+      <h2>Scoring and the exit</h2>
+
+      <p>Riders shoot at the witches throughout the manor, with the main
+      battle staged in the courtyard. Scoring is per car, and the payoff is
+      physical rather than a number on a screen: every rider gets Halloween
+      candy at the end, and the lowest-scoring car in each train gets raisins
+      instead. It is a small joke that does real work — it gives a family a
+      reason to compete with each other for 90 seconds, and it gives the ride
+      a reason to put a candy dispenser in the unload station.</p>
+
+      <p>The exit routes through the restaurant and gift shop and back into
+      Boo Junction's town square, so the ride ends inside the land's
+      celebration rather than at a turnstile.</p>
+
+      <figure>
+  <img src="../assets/img/coaster-droptrack.webp" alt="Hand-drawn concept sketch of the drop track pre-show room with the train held in the witch&#x27;s manor hall" width="1400" height="916" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 8</span> Pre-show concept for the drop track room: the train holds in the manor hall before the floor gives way.</figcaption>
+</figure>
+    </section>
+    <section class="section">
+      <h2>What I would change</h2>
+
+      <p>The scoring system is the weakest part of the proposal. A digital
+      laser pointer read by trackside sensors is fine on paper, but we never
+      worked out what happens when two riders in the same car hit the same
+      target in the same frame, and the answer to that determines whether the
+      scoring feels fair enough to compete over. For a ride whose entire payoff
+      is the comparison between cars, leaving the tie-break undefined was the
+      real gap.</p>
+      <p>I would also plan the drop track's capacity against the lift earlier.
+      We sized the station for 1,440 guests an hour and then checked the rest
+      of the circuit against it, which is backwards: the drop track is the
+      slowest element to reset, so it, not the station, sets the real dispatch
+      interval.</p>
+    </section>
+    <section class="section">
+      <h2>Credits</h2>
+
+      <p>Designed with Derek Paterson, Zach Weaver and Willis McCranie. I led
+      the team and wrote the ride's storyline; the SolidWorks design,
+      operations numbers and business case were split across the four of
+      us.</p>
     </section>
     <div class="foot">
       <span>Anish Bhatia — Atlanta, Georgia</span>

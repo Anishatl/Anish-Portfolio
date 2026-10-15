@@ -6,9 +6,11 @@ step, no dependencies. Served by GitHub Pages from the repo root.
 ## Structure
 
 ```
-index.html              single-page site: work, experience, research,
-                        skills, education, contact, drawing
-projects/*.html         one page per project (12)
+index.html              single-page site. The masthead is deliberately
+                        minimal — name, availability, and a spec table, then
+                        straight into Work. Narrative belongs on the project
+                        pages, not the front page.
+projects/*.html         one page per project (11)
 assets/css/site.css     the whole design system
 assets/fonts/           IBM Plex Sans + Mono, latin subset, woff2
 assets/img/             WebP imagery + og-preview.jpg
@@ -42,13 +44,6 @@ Conventions worth keeping if you edit:
 - One motion moment only: the tick on the active index tab.
 - No rounded corners, no drop shadows, no skill bars or proficiency ratings.
 - Meta is set as small spec tables, not middle-dot strings.
-
-## Headshot
-
-`assets/img/headshot.webp` — square crop, shown at 132px on desktop and 96px on
-mobile, in the same 1px ink frame as every other figure. To replace it, drop in
-a new square image at the same path and update the `width`/`height` attributes
-on the `.headshot` img in `index.html`.
 
 ## Adding the resume
 
