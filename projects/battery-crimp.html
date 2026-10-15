@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Battery crimp resistance testing — Anish Bhatia</title>
-<meta name="description" content="Measuring resistance across three battery connection methods to diagnose mid-competition battery failures.">
+<meta name="description" content="Measuring resistance across three battery connection methods to diagnose mid-competition battery failures on an FRC robot.">
 <link rel="canonical" href="https://anishatl.github.io/Anish-Portfolio/projects/battery-crimp.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Battery crimp resistance testing — Anish Bhatia">
-<meta property="og:description" content="Measuring resistance across three battery connection methods to diagnose mid-competition battery failures.">
+<meta property="og:description" content="Measuring resistance across three battery connection methods to diagnose mid-competition battery failures on an FRC robot.">
 <meta property="og:url" content="https://anishatl.github.io/Anish-Portfolio/projects/battery-crimp.html">
 <meta property="og:image" content="https://anishatl.github.io/Anish-Portfolio/assets/img/og-preview.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -37,21 +37,60 @@
         <tr><th scope="row">Dates</th><td>2025</td></tr>
       </tbody></table>
     </header>
-    <p class="lede">Our 12V 18Ah competition batteries were dying faster than they should. Rather than replace them, I tested whether the connection itself was the problem.</p>
+    <p class="lede">Our 12V 18Ah competition batteries were dying faster than they should, mid-event, with charge left in them. Rather than keep replacing them I tested whether the connection itself was the problem.</p>
     <div class="readings">
       <div class="reading"><div class="reading-val">3</div><div class="reading-unit">Connection methods compared</div></div>
       <div class="reading"><div class="reading-val">3</div><div class="reading-unit">Trials per method</div></div>
+      <div class="reading"><div class="reading-val">20 s</div><div class="reading-unit">Multimeter settle time per reading</div></div>
     </div>
     <section class="section">
+      <h2>The suspect</h2>
 
-      <p>I compared three approaches — SB120 crimps alone, soldered leads
-      alone, and both together — measuring resistance across each with a
-      multimeter over three trials per method. Connection resistance turns into
-      heat and voltage sag under the current an FRC drivetrain pulls, so a
-      poor crimp shows up as a battery that looks dead long before it is.</p>
-      <p>It is a small experiment, but it is the kind that decides whether you
-      spend a season replacing batteries or fixing the thing that was killing
-      them.</p>
+      <p>FRC robots run a single 12V 18Ah sealed AGM battery — ours are MK
+      ES17-12s. The rules allow one battery and one connector type, so when a
+      battery reads healthy on a charger but sags under load on the field, the
+      fault is either inside the cell or in the few inches of lead and
+      connector between it and the robot.</p>
+
+      <div class="fig-pair">
+        <figure>
+  <img src="../assets/img/battery-mk-es17.webp" alt="MK Powered ES17-12 12-volt 18 amp-hour AGM non-spillable battery" width="1100" height="1202" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 1</span> MK ES17-12, the 12V 18Ah AGM battery the robot runs on.</figcaption>
+</figure>
+        <figure>
+  <img src="../assets/img/battery-sb120-connector.webp" alt="Blue Anderson SB120 600-volt connector housing beside its two silver-plated crimp contacts" width="1100" height="961" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 2</span> SB120 housing with its two contacts — the crimped joint inside each barrel is what the test was actually measuring.</figcaption>
+</figure>
+      </div>
+
+      <p>That connector is an Anderson SB120, rated 120 A. A drivetrain pulling
+      current through a poor crimp turns the joint into a heater: resistance
+      there drops voltage before it ever reaches the robot, and the brownout
+      looks exactly like a flat battery from the driver's station.</p>
+    </section>
+    <section class="section">
+      <h2>Method</h2>
+
+      <p>I assembled all three connection types myself and measured start and
+      end resistance on each with a multimeter: SB120 crimps alone, soldered
+      leads alone, and crimps with the joint also soldered. Each was run three
+      times to keep a single bad seating from deciding the result, and every
+      reading was taken after holding the probes for 20 seconds so the
+      measurements were taken at the same point on the meter's settle rather
+      than whenever the number looked stable.</p>
+      <p>The useful comparison is not which number is lowest in isolation but
+      how consistent each method is across its three trials — a connection
+      method that is excellent when perfectly executed and poor when rushed is
+      the wrong choice for a pit crew replacing a battery between matches.</p>
+    </section>
+    <section class="section">
+      <h2>Why it mattered</h2>
+
+      <p>It is a small experiment and it decided something real: whether we
+      spent the season buying batteries or fixing the thing that was killing
+      them. It also changed how the team builds leads — the result is only
+      useful if the person crimping the next one knows which method to
+      use.</p>
     </section>
     <div class="foot">
       <span>Anish Bhatia — Atlanta, Georgia</span>
