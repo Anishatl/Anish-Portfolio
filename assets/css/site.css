@@ -140,30 +140,21 @@ img { max-width: 100%; height: auto; display: block; }
   line-height: 1.08;
   letter-spacing: -0.022em;
   font-weight: 700;
-  margin: 0 0 6px;
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--brick);
+  max-width: var(--plate);
 }
 .standfirst {
   font-size: 19px; line-height: 1.5; color: var(--ink);
   margin: 0 0 var(--unit); max-width: 56ch;
 }
 
-/* availability: the thing a recruiter filters on, so it gets the one
-   piece of emphatic treatment in the header */
-.availability {
-  display: inline-block;
-  border-top: 2px solid var(--brick);
-  border-bottom: 1px solid var(--grid);
-  padding: 8px 0 7px;
-  margin: 0 0 calc(var(--unit) * 1.5);
-  font: 500 14px/1.4 "IBM Plex Mono", monospace;
-  letter-spacing: 0.01em;
-  color: var(--ink);
-}
-
 /* ---------- spec table (replaces middle-dot meta strings) ---------- */
 .spec {
   border-collapse: collapse;
-  margin: 0 0 calc(var(--unit) * 1.5);
+  /* the rule under the masthead name, then the table */
+  margin: calc(var(--unit) * 0.8) 0 calc(var(--unit) * 1.5);
   font-size: 14px;
   width: 100%; max-width: 58ch;
 }
