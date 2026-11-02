@@ -3,32 +3,42 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Precision ball launcher — Anish Bhatia</title>
+<title>Precision ball launcher | Anish Bhatia</title>
 <meta name="description" content="A compression-wheel ball launcher accurate enough to hit a target window from twenty feet.">
 <link rel="canonical" href="https://anishatl.github.io/Anish-Portfolio/projects/ball-launcher.html">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Precision ball launcher — Anish Bhatia">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Precision ball launcher | Anish Bhatia">
 <meta property="og:description" content="A compression-wheel ball launcher accurate enough to hit a target window from twenty feet.">
 <meta property="og:url" content="https://anishatl.github.io/Anish-Portfolio/projects/ball-launcher.html">
 <meta property="og:image" content="https://anishatl.github.io/Anish-Portfolio/assets/img/og-preview.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preload" href="../assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../assets/fonts/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="theme-color" content="#0B1F3A">
+<link rel="preload" href="../assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<nav class="tabs" aria-label="Sections">
-      <a href="../index.html#work">Work</a>
-      <a href="../index.html#experience">Experience</a>
-      <a href="../index.html#research">Research</a>
-      <a href="../index.html#skills">Skills</a>
-      <a href="../index.html#education">Education</a>
-      <a href="../index.html#contact">Contact</a>
-</nav>
-<div class="sheet">
-  <main class="col" id="main">
-    <a class="backlink" href="../index.html#work">← All work</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Anish <span>Bhatia</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <ul class="nav" id="site-nav">
+<li><a href="../index.html">Home</a></li>
+<li><a href="../about.html">About</a></li>
+<li><a href="../projects.html" aria-current="page">Projects</a></li>
+<li><a href="../research.html">Research</a></li>
+<li><a href="../beyond.html">Beyond Engineering</a></li>
+<li><a href="../resume.html">Resume</a></li>
+    </ul>
+  </div>
+</header>
+<main id="main">
+<article class="project-page">
+  <div class="wrap"><div class="read">
+    <a class="backlink" href="../projects.html">← All projects</a>
+
     <header class="project-head">
       <h1>Precision ball launcher</h1>
       <table class="projectmeta"><tbody>
@@ -36,24 +46,43 @@
         <tr><th scope="row">Dates</th><td>2025</td></tr>
       </tbody></table>
     </header>
-    <p class="lede">A compression-wheel launcher built for a school engineering class, tuned to put a ball through a target window from twenty feet away.</p>
+    <p class="lede">A compression-wheel launcher built as a group project for a school engineering class. The goal: shoot a ½-inch ball 10 to 20 feet into specific windows in a target array, aimed by remote control.</p>
+    <div class="readings">
+      <div class="reading"><div class="reading-val">6</div><div class="reading-unit">CAD prototypes before the final design</div></div>
+      <div class="reading"><div class="reading-val">10–20 ft</div><div class="reading-unit">Target range into a window array</div></div>
+      <div class="reading"><div class="reading-val">~9 V</div><div class="reading-unit">Power budget the motors had to work within</div></div>
+    </div>
     <section class="section">
 
       <figure>
   <img src="../assets/img/ball-launcher.webp" alt="Precision ball launcher final assembly with electronics box" width="1100" height="825" loading="lazy" decoding="async">
   <figcaption><span class="fignum">Fig. 1</span> Final assembly with the electronics enclosure mounted below the launcher.</figcaption>
 </figure>
-      <p>The launcher drives a ball between compression wheels, with the
-      electronics housed in an enclosure below the mechanism. Accuracy came
-      from matching wheel speed to the compression the ball actually
-      experiences, which meant tuning the gap and the speed together rather
-      than one at a time.</p>
+      <p>The launcher drives a ball between compression wheels, with the electronics housed in an enclosure below the mechanism. Accuracy came from matching wheel speed to the compression the ball actually experiences, which meant tuning the gap and the speed together rather than one at a time.</p>
     </section>
-    <div class="foot">
-      <span>Anish Bhatia — Atlanta, Georgia</span>
-      <span><a href="mailto:anishb.atl@gmail.com">anishb.atl@gmail.com</a></span>
-    </div>
-  </main>
-</div>
+    <section class="section">
+      <h2>Design and prototyping</h2>
+      <p>We designed six prototypes and the final launcher in OnShape, testing compression wheel diameter and thickness, barrel length and width, launch distance and launch force across them. For the wheels themselves we compared materials and settled on thermoplastic polyurethane (TPU), whose flexibility let the wheels grip the ball without crushing it.</p>
+    </section>
+    <section class="section">
+      <h2>Electronics and control</h2>
+      <p>Two brushless motors spin the compression wheels, and two servos aim the launcher left and right and up and down, all controlled with an infrared remote. The system runs on an ESP32, programmed in the Arduino IDE.</p>
+      <p>Power was the hardest problem. We could not deliver enough wattage to the brushless motors while staying around 9 volts, so we moved to LiPo batteries. Getting the connections between the batteries, motors and ESCs right took research and careful soldering.</p>
+    </section>
+    <section class="section">
+      <h2>My role</h2>
+      <p>I worked on design, material selection, research, manufacturing and testing, and handled all of the electronics and wiring.</p>
+    </section>
+    <nav class="pager" aria-label="More projects"><a class="prev" href="battery-crimp.html"><small>← Previous</small><strong>Battery crimp resistance testing</strong></a><a class="next" href="road-case.html"><small>Next →</small><strong>Robotics team road case</strong></a></nav>
+  </div></div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <span>Anish Bhatia · Atlanta, Georgia · <a href="mailto:anishb.atl@gmail.com">anishb.atl@gmail.com</a></span>
+    <nav aria-label="Footer"><a href="../about.html">About</a> <a href="../projects.html">Projects</a> <a href="../research.html">Research</a> <a href="../beyond.html">Beyond Engineering</a> <a href="../resume.html">Resume</a> <a href="https://www.linkedin.com/in/anish-bhatia-733184319/">LinkedIn</a> <a href="https://github.com/Anishatl">GitHub</a></nav>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
 </body>
 </html>
