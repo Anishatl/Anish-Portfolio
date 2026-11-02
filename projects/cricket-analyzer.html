@@ -3,59 +3,66 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cricket bowling risk analyser — Anish Bhatia</title>
+<title>Cricket bowling risk analyzer | Anish Bhatia</title>
 <meta name="description" content="A MediaPipe pose-estimation app that flags injury risk in a cricket bowling action, built after a personal bowling injury.">
 <link rel="canonical" href="https://anishatl.github.io/Anish-Portfolio/projects/cricket-analyzer.html">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Cricket bowling risk analyser — Anish Bhatia">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cricket bowling risk analyzer | Anish Bhatia">
 <meta property="og:description" content="A MediaPipe pose-estimation app that flags injury risk in a cricket bowling action, built after a personal bowling injury.">
 <meta property="og:url" content="https://anishatl.github.io/Anish-Portfolio/projects/cricket-analyzer.html">
 <meta property="og:image" content="https://anishatl.github.io/Anish-Portfolio/assets/img/og-preview.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preload" href="../assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../assets/fonts/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="theme-color" content="#0B1F3A">
+<link rel="preload" href="../assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<nav class="tabs" aria-label="Sections">
-      <a href="../index.html#work">Work</a>
-      <a href="../index.html#experience">Experience</a>
-      <a href="../index.html#research">Research</a>
-      <a href="../index.html#skills">Skills</a>
-      <a href="../index.html#education">Education</a>
-      <a href="../index.html#contact">Contact</a>
-</nav>
-<div class="sheet">
-  <main class="col" id="main">
-    <a class="backlink" href="../index.html#work">← All work</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Anish <span>Bhatia</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <ul class="nav" id="site-nav">
+<li><a href="../index.html">Home</a></li>
+<li><a href="../about.html">About</a></li>
+<li><a href="../projects.html" aria-current="page">Projects</a></li>
+<li><a href="../research.html">Research</a></li>
+<li><a href="../beyond.html">Beyond Engineering</a></li>
+<li><a href="../resume.html">Resume</a></li>
+    </ul>
+  </div>
+</header>
+<main id="main">
+<article class="project-page">
+  <div class="wrap"><div class="read">
+    <a class="backlink" href="../projects.html">← All projects</a>
+
     <header class="project-head">
-      <h1>Cricket bowling risk analyser</h1>
+      <h1>Cricket bowling risk analyzer</h1>
       <table class="projectmeta"><tbody>
         <tr><th scope="row">Type</th><td>Individual project</td></tr>
         <tr><th scope="row">Dates</th><td>May – October 2025</td></tr>
         <tr><th scope="row">Stack</th><td>Python, MediaPipe, Streamlit</td></tr>
       </tbody></table>
     </header>
-    <p class="lede">A bowling injury kept me out of cricket for months. I taught myself machine learning at a Harvard AI bootcamp and built a tool that flags risky bowling mechanics before they cause an injury — then used it to fix my own action.</p>
+    <p class="lede">A bowling injury kept me out of cricket for months. I taught myself machine learning at a Harvard AI bootcamp and built a tool that flags risky bowling mechanics before they cause an injury, then used it to fix my own action.</p>
     <div class="readings">
       <div class="reading"><div class="reading-val">96%</div><div class="reading-unit">Model accuracy, after correcting for overfitting</div></div>
-      <div class="reading"><div class="reading-val">99.9969%</div><div class="reading-unit">Accuracy of the first model — the warning sign</div></div>
+      <div class="reading"><div class="reading-val">99.9969%</div><div class="reading-unit">Accuracy of the first model: the warning sign</div></div>
     </div>
     <section class="section">
       <h2>The failure that mattered</h2>
 
-      <p>I spent hours with Level 2 and Level 3 ICC-recognised coaches —
-      several of whom played for and coached top-ranked cricket nations — to
-      learn what actually makes a bowling action risky, and the safe ranges for
+      <p>I spent hours with Level 2 and Level 3 ICC-recognized coaches (several of whom played for and coached top-ranked cricket nations) to learn what actually makes a bowling action risky, and the safe ranges for
       spine, knee, shoulder and elbow angles and hip-to-shoulder separation.
       Using Google's MediaPipe I extracted joint-angle vectors from bowling
       video, and then hit the real problem: there are not enough clean bowling
       videos publicly available to train a reliable model.</p>
 
       <p>So I generated synthetic data. My first generator produced data clean
-      enough that a model trained on it scored 99.9969% accuracy — two
-      predictions wrong out of 65,097. That is not a good model; it is a model
+      enough that a model trained on it scored 99.9969% accuracy (two predictions wrong out of 65,097). That is not a good model; it is a model
       that has learned a generator. I rebuilt it to inject controlled
       randomness mimicking camera noise and natural variation in bowling form,
       which brought accuracy down to a far more trustworthy 96%.</p>
@@ -69,7 +76,7 @@
 
       <div class="fig-pair">
         <figure>
-  <img src="../assets/img/cricket-app-ui.webp" alt="Screenshot of the bowling risk analyser showing an overall risk summary" width="895" height="732" loading="lazy" decoding="async">
+  <img src="../assets/img/cricket-app-ui.webp" alt="Screenshot of the bowling risk analyzer showing an overall risk summary" width="895" height="732" loading="lazy" decoding="async">
   <figcaption><span class="fignum">Fig. 1</span> Risk summary for an uploaded delivery.</figcaption>
 </figure>
         <figure>
@@ -79,15 +86,12 @@
       </div>
       <p>The app is built in Streamlit. It gives an overall risk summary first,
       then lets you step through the uploaded video frame by frame to see the
-      pose estimation and the risk feedback together — deliberately, so a user
+      pose estimation and the risk feedback together, deliberately, so a user
       can see when the tracker itself has lost the plot rather than trusting a
       score built on bad landmarks. A separate clip-level model handles
       full-video analysis.</p>
-      <p>It runs locally through Streamlit on Python 3.10, with
-      <code>mediapipe==0.10.9</code> pinned because later releases removed
-      functions the code depends on.</p>
-      <p><a href="https://github.com/Anishatl/bowling-streamlit-app">Source on
-      GitHub</a></p>
+      
+      
     </section>
     <section class="section">
       <h2>Outcome</h2>
@@ -96,11 +100,16 @@
       and 6% faster. I went through injury rehabilitation across 2024 and 2025
       and now play for the Georgia Tech Cricket Club.</p>
     </section>
-    <div class="foot">
-      <span>Anish Bhatia — Atlanta, Georgia</span>
-      <span><a href="mailto:anishb.atl@gmail.com">anishb.atl@gmail.com</a></span>
-    </div>
-  </main>
-</div>
+    <nav class="pager" aria-label="More projects"><a class="prev" href="scouting-software.html"><small>← Previous</small><strong>Scouting and strategy system</strong></a><a class="next" href="battery-crimp.html"><small>Next →</small><strong>Battery crimp resistance testing</strong></a></nav>
+  </div></div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <span>Anish Bhatia · Atlanta, Georgia · <a href="mailto:anishb.atl@gmail.com">anishb.atl@gmail.com</a></span>
+    <nav aria-label="Footer"><a href="../about.html">About</a> <a href="../projects.html">Projects</a> <a href="../research.html">Research</a> <a href="../beyond.html">Beyond Engineering</a> <a href="../resume.html">Resume</a> <a href="https://www.linkedin.com/in/anish-bhatia-733184319/">LinkedIn</a> <a href="https://github.com/Anishatl">GitHub</a></nav>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
 </body>
 </html>

@@ -3,34 +3,44 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Blitz — 2026 competition robot — Anish Bhatia</title>
+<title>Blitz | Anish Bhatia</title>
 <meta name="description" content="Complete electrical architecture and mechanical CAD of an FRC competition robot: component layout, CAN bus routing, in-house manufacturing and assembly.">
 <link rel="canonical" href="https://anishatl.github.io/Anish-Portfolio/projects/blitz.html">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Blitz — 2026 competition robot — Anish Bhatia">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Blitz | Anish Bhatia">
 <meta property="og:description" content="Complete electrical architecture and mechanical CAD of an FRC competition robot: component layout, CAN bus routing, in-house manufacturing and assembly.">
 <meta property="og:url" content="https://anishatl.github.io/Anish-Portfolio/projects/blitz.html">
 <meta property="og:image" content="https://anishatl.github.io/Anish-Portfolio/assets/img/og-preview.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preload" href="../assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../assets/fonts/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="theme-color" content="#0B1F3A">
+<link rel="preload" href="../assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<nav class="tabs" aria-label="Sections">
-      <a href="../index.html#work">Work</a>
-      <a href="../index.html#experience">Experience</a>
-      <a href="../index.html#research">Research</a>
-      <a href="../index.html#skills">Skills</a>
-      <a href="../index.html#education">Education</a>
-      <a href="../index.html#contact">Contact</a>
-</nav>
-<div class="sheet">
-  <main class="col" id="main">
-    <a class="backlink" href="../index.html#work">← All work</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Anish <span>Bhatia</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <ul class="nav" id="site-nav">
+<li><a href="../index.html">Home</a></li>
+<li><a href="../about.html">About</a></li>
+<li><a href="../projects.html" aria-current="page">Projects</a></li>
+<li><a href="../research.html">Research</a></li>
+<li><a href="../beyond.html">Beyond Engineering</a></li>
+<li><a href="../resume.html">Resume</a></li>
+    </ul>
+  </div>
+</header>
+<main id="main">
+<article class="project-page">
+  <div class="wrap"><div class="read">
+    <a class="backlink" href="../projects.html">← All projects</a>
+
     <header class="project-head">
-      <h1>Blitz — 2026 competition robot</h1>
+      <h1>Blitz: 2026 competition robot</h1>
       <table class="projectmeta"><tbody>
         <tr><th scope="row">Team</th><td>FIRST Robotics Competition, Team 1771</td></tr>
         <tr><th scope="row">Role</th><td>Lead designer and lead engineer</td></tr>
@@ -55,7 +65,7 @@
 
       <figure>
   <img src="../assets/img/blitz-cad-electrical.webp" alt="CAD render of the Blitz electrical layout from above, showing power distribution, breaker bank, control electronics and four corner drive modules" width="740" height="864" loading="lazy" decoding="async">
-  <figcaption><span class="fignum">Fig. 1</span> Electrical layout. Power distribution and its breaker bank sit on the centreline; the controller and auxiliary boards sit outboard of it, with the four corner drive modules at the extremes and the CAN chain following the perimeter.</figcaption>
+  <figcaption><span class="fignum">Fig. 1</span> Electrical layout. Power distribution and its breaker bank sit on the centerline; the controller and auxiliary boards sit outboard of it, with the four corner drive modules at the extremes and the CAN chain following the perimeter.</figcaption>
 </figure>
 
       <p>Two decisions drove the layout. First, every device on the CAN network
@@ -67,10 +77,10 @@
       produced in volume.</p>
 
       <p>Motor controllers are distributed to their mechanisms rather than
-      centralised. The turret carries three motors and their controllers
+      centralized. The turret carries three motors and their controllers
       directly on the rotating assembly; both intake motors sit inside the main
       chassis instead of on the intake arm. That second choice is what makes
-      the intake a two-bolt removal — the electrical interface stays with the
+      the intake a two-bolt removal: the electrical interface stays with the
       robot when the mechanism comes off.</p>
     </section>
     <section class="section">
@@ -91,20 +101,20 @@
       <p>The intake pivots on two motors: one drives the up-and-down motion,
       the other spins a row of 60-durometer composite wheels inward to pull
       balls in. That same pivoting motion doubles as the drive for the hopper,
-      sliding it in and out passively as the intake moves — a fully mechanical
+      sliding it in and out passively as the intake moves, a fully mechanical
       link with no extra motor.</p>
       <p>The hopper is polycarbonate, cut and bent in-house, shaped to expand
       effective ball storage. The intake is PID-tuned so a full load of balls
       cannot push it back up on its own, which is what keeps that passive
       hopper motion reliable under game load.</p>
 
-      <h3>Indexing — the spindexer</h3>
+      <h3>Indexing: the spindexer</h3>
       <p>Balls are indexed by what we called the spindexer: a 3D-printed cone
       with holes and divots that stirs the balls to prevent jams, paired with a
       moving polycarbonate floor that carries balls forward without ever
       compressing them. Both are wrapped in grip tape for consistent traction.
       Around the moving floor sits a 3D-printed ring we nicknamed the
-      Singularity — a sloped surface we iterated on dozens of times to stop
+      Singularity, a sloped surface we iterated on dozens of times to stop
       jams and let gravity feed balls in faster. The whole system runs off a
       custom two-motor 3D-printed gearbox at the bottom of the robot.</p>
 
@@ -121,9 +131,7 @@
 </figure>
 
       <h3>Turret and shooter</h3>
-      <p>The turret rotates 420 degrees, driven by two constant-force springs
-      pulling a tether around a 3D-printed ring — a simple mechanism that gave
-      us nearly a rotation and a half of range. The assembly is 12.75 inches in
+      <p>The turret rotates 420 degrees, nearly a rotation and a half, turned by its own motor. The cable tether feeding it wraps around a 3D-printed ring, and two constant-force springs retract the tether as the turret turns, so the wiring never goes slack or tangles. The assembly is 12.75 inches in
       diameter and carries three motors and their controllers on the turret
       itself: two drive the main shooter wheels and four back-hood wheels, and
       one drives rotation. We spent a long time testing gear ratios on the
@@ -135,11 +143,7 @@
 
       <p>Most of Blitz was made in-house. The chassis and polycarbonate came
       off our CNC router, and the spindexer cone, the Singularity ring, the
-      feeder ramp and the two-motor gearbox were all custom 3D-printed parts. I
-      assembled the robot's electrical system and physical structure rather
-      than handing the drawings to someone else, which is the only reason the
-      service decisions above held up — you find out quickly whether a
-      connector is reachable when you are the one reaching for it.</p>
+      feeder ramp and the two-motor gearbox were all custom 3D-printed parts.</p>
 
       <figure>
   <img src="../assets/img/blitz-build-shop.webp" alt="The Blitz robot partially disassembled in a workshop under orange lighting during competition build" width="1400" height="1867" loading="lazy" decoding="async">
@@ -150,8 +154,7 @@
       <h2>Competition</h2>
 
       <p>Blitz competed through the 2026 season to the Milstein Division
-      semifinals at the FRC World Championship, where I served as alliance
-      captain and drove the robot.</p>
+      semifinals at the FRC World Championship, where I served as alliance captain and was one of the robot's two drivers.</p>
 
       <div class="fig-pair">
         <figure>
@@ -178,15 +181,14 @@
       Championship as Curie Division champion, fielded the <b>#1-ranked
       autonomous robot in the world</b> in 2024, and won <b>three consecutive
       state championships</b> from 2024 to 2026. I served as team and alliance
-      captain across three of those seasons and drove Blitz in
-      competition.</p>
+      captain across three of those seasons and was one of Blitz's two drivers in competition.</p>
     </section>
     <section class="section">
       <h2>What I would change</h2>
 
       <p>We fully CAD'd a climber for Blitz and decided not to install it.
       Given our match strategy that season, the point value did not justify the
-      weight, complexity and failure risk — a tradeoff we made deliberately
+      weight, complexity and failure risk, a tradeoff we made deliberately
       rather than a mechanism that ran out of time. I still think that was
       right, but we committed to it late, and the weeks spent CADing it were
       weeks not spent on the indexer, which was our real bottleneck.</p>
@@ -196,11 +198,16 @@
       I would plan service access and fault isolation into the topology from
       the start, not just mechanical clearance.</p>
     </section>
-    <div class="foot">
-      <span>Anish Bhatia — Atlanta, Georgia</span>
-      <span><a href="mailto:anishb.atl@gmail.com">anishb.atl@gmail.com</a></span>
-    </div>
-  </main>
-</div>
+    <nav class="pager" aria-label="More projects"><a class="next" href="rollercoaster.html"><small>Next →</small><strong>The Witch Next Door: family thrill coaster</strong></a></nav>
+  </div></div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <span>Anish Bhatia · Atlanta, Georgia · <a href="mailto:anishb.atl@gmail.com">anishb.atl@gmail.com</a></span>
+    <nav aria-label="Footer"><a href="../about.html">About</a> <a href="../projects.html">Projects</a> <a href="../research.html">Research</a> <a href="../beyond.html">Beyond Engineering</a> <a href="../resume.html">Resume</a> <a href="https://www.linkedin.com/in/anish-bhatia-733184319/">LinkedIn</a> <a href="https://github.com/Anishatl">GitHub</a></nav>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
 </body>
 </html>
