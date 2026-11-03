@@ -1,4 +1,4 @@
-# anishatl.github.io/Anish-Portfolio
+# anishbhatia.me
 
 Personal portfolio. Plain static HTML, CSS and self-hosted fonts with no build
 step and no dependencies. GitHub Pages serves it from the repo root.
