@@ -254,9 +254,12 @@ a.card:hover { transform: translateY(-3px); border-color: var(--gold); color: in
 .cta p { color: #C9D2E0; max-width: 54ch; margin: 0 auto 22px; }
 .cta .btns { justify-content: center; }
 .site-footer { background: var(--header-bg); color: #A7B1C2; padding: 28px 0; font-size: .9rem; border-top: 3px solid var(--gold); }
-.site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 20px; }
+.site-footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; }
 .site-footer a { color: #E9ECF1; }
-.site-footer nav { display: flex; flex-wrap: wrap; gap: 16px; }
+/* gap tuned so the identity line and all eight links sit on one row at full
+   width; it still wraps on its own once the viewport is too narrow */
+.site-footer nav { display: flex; flex-wrap: wrap; gap: 12px; }
+.site-footer nav a { white-space: nowrap; }
 
 /* ---------- utilities ---------- */
 .center { text-align: center; }
