@@ -78,10 +78,6 @@ p { margin: 0 0 1em; }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: 16px; }
 .brand { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 1.15rem; color: var(--header-text); text-decoration: none; letter-spacing: -.01em; white-space: nowrap; }
 .brand span { color: var(--gold); }
-/* logo mark sits left of the wordmark; alt="" since the text repeats the name */
-.brand { display: inline-flex; align-items: center; gap: 10px; }
-.brand-mark { width: 30px; height: 30px; display: block; flex: none; }
-@media (max-width: 720px) { .brand-mark { width: 26px; height: 26px; } }
 .brand:hover { color: var(--header-text); }
 .nav { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
 .nav a { display: block; padding: 8px 12px; border-radius: 8px; color: var(--header-text); text-decoration: none; font-weight: 500; font-size: .95rem; }
