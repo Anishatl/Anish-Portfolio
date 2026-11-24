@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pocket Sentry: Wi-Fi motion alarm | Anish Bhatia</title>
+<meta name="description" content="A battery-powered ESP32 motion alarm that sleeps until someone walks past, then sends an alert to my phone. ECE 1100 Discovery Project at Georgia Tech.">
+<link rel="canonical" href="https://anishbhatia.me/projects/pocket-sentry.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pocket Sentry: Wi-Fi motion alarm | Anish Bhatia">
+<meta property="og:description" content="A battery-powered ESP32 motion alarm that sleeps until someone walks past, then sends an alert to my phone. ECE 1100 Discovery Project at Georgia Tech.">
+<meta property="og:url" content="https://anishbhatia.me/projects/pocket-sentry.html">
+<meta property="og:image" content="https://anishbhatia.me/assets/img/og-preview.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B1F3A">
+<link rel="preload" href="../assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/brand/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/brand/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Anish <span>Bhatia</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <ul class="nav" id="site-nav">
+<li><a href="../index.html">Home</a></li>
+<li><a href="../about.html">About</a></li>
+<li><a href="../goals.html">Career Goals</a></li>
+<li><a href="../projects.html" aria-current="page">Projects</a></li>
+<li><a href="../research.html">Research</a></li>
+<li><a href="../beyond.html">Beyond Engineering</a></li>
+<li><a href="../resume.html">Resume</a></li>
+    </ul>
+  </div>
+</header>
+<main id="main">
+<article class="project-page">
+  <div class="wrap"><div class="read">
+    <a class="backlink" href="../projects.html">← All projects</a>
+
+    <header class="project-head">
+      <h1>Pocket Sentry: Wi-Fi motion alarm</h1>
+      <table class="projectmeta"><tbody>
+        <tr><th scope="row">Course</th><td>ECE 1100 Discovery Project, Georgia Tech</td></tr>
+        <tr><th scope="row">Type</th><td>Individual project</td></tr>
+        <tr><th scope="row">Dates</th><td>Sept – Nov 2026</td></tr>
+        <tr><th scope="row">Built with</th><td>ESP32, HC-SR501 PIR sensor, C++ in the Arduino IDE, Telegram Bot API</td></tr>
+      </tbody></table>
+    </header>
+    <p class="lede">A small battery-powered box that sleeps until someone walks past it, then beeps and sends an alert to my phone over Wi-Fi. I took it from a one-page pitch to a soldered, working device: choosing the parts, planning the perfboard hole by hole, writing the firmware, and debugging it until the alerts came through.</p>
+    <div class="readings">
+      <div class="reading"><div class="reading-val">4× AA</div><div class="reading-unit">Power source, with no charger or boost stage</div></div>
+      <div class="reading"><div class="reading-val">7 / 7</div><div class="reading-unit">Phone alerts delivered in the first live test</div></div>
+      <div class="reading"><div class="reading-val">1 pin</div><div class="reading-unit">GPIO 33 wakes the chip from deep sleep</div></div>
+    </div>
+
+    <section class="section">
+      <figure>
+  <img src="../assets/img/sentry-system.webp" alt="The finished motion alarm on a desk: ESP32 on a perfboard, PIR motion sensor, buzzer module and a 4×AA battery pack with an inline switch" width="1400" height="1050" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 1</span> The working system: ESP32 on its perfboard, the PIR sensor (white dome), the buzzer module, and the 4×AA pack feeding it through an on/off switch.</figcaption>
+</figure>
+    </section>
+
+    <section class="section">
+      <h2>How it works</h2>
+      <p>Most of the time the ESP32 is in deep sleep, with almost everything on the chip powered down. A passive infrared (PIR) sensor watches the room. It doesn't measure distance or motion directly; it measures changes in infrared light. A warm body moving across its lens zones changes the heat pattern on its two-element sensor, and its output pin goes HIGH.</p>
+      <p>That pin is wired to GPIO 33, one of the ESP32's RTC pins, which can wake the chip from deep sleep. On waking, the firmware:</p>
+      <ol>
+        <li>Beeps the buzzer and lights the LED right away, before touching the network.</li>
+        <li>Joins Wi-Fi, using the router's channel and address saved from the last connection so it can skip a full scan.</li>
+        <li>Sends an HTTPS request to the Telegram Bot API, which pushes the message to my phone.</li>
+        <li>Logs how long the Wi-Fi connection and the alert took, in milliseconds.</li>
+        <li>Waits for the PIR to go quiet, then goes back to sleep.</li>
+      </ol>
+      <p>Two values survive sleep in RTC memory: the alert count and the cached Wi-Fi details. Every wake is otherwise a fresh boot.</p>
+    </section>
+
+    <section class="section">
+      <h2>Hardware</h2>
+      <figure class="wide-fig">
+  <img src="../assets/img/sentry-parts.webp" alt="Parts laid out on a desk: ESP32 board, perfboard, buzzer module, 220 ohm resistors, red LED, 470 microfarad capacitor, AA batteries and holder, switch, hookup wire and jumper wires" width="1400" height="1867" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 2</span> Everything before assembly.</figcaption>
+</figure>
+      <table class="projectmeta"><tbody>
+        <tr><th scope="row">Controller</th><td>ESP32-WROOM-32 dev board (CP2102 USB chip), in female header sockets so it can be removed</td></tr>
+        <tr><th scope="row">Sensor</th><td>HC-SR501 PIR, set to minimum hold time, maximum sensitivity and repeat-trigger mode</td></tr>
+        <tr><th scope="row">Outputs</th><td>KY-012 active buzzer on GPIO 27; red LED through a 220 Ω resistor on GPIO 26</td></tr>
+        <tr><th scope="row">Power</th><td>4×AA holder through a switch to the board's VIN pin, with a 470 µF 16 V capacitor across the supply</td></tr>
+        <tr><th scope="row">Board</th><td>5×7 cm double-sided perfboard, solder-bridged traces and bare-wire power and ground buses</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="section">
+      <h2>Design decisions</h2>
+      <h3>Dropping the lithium cell</h3>
+      <p>My pitch called for an 18650 lithium cell with a USB charging board. Working through the voltages changed that. The HC-SR501 needs at least 4.5 V, and a lithium cell only gives 3.7 to 4.2 V, so I would also have needed a boost converter set to 5 V. Four alkaline AAs give about 6 V fresh and still around 4.8 V near empty, which is inside the range of both the ESP32's VIN regulator and the PIR. That removed the charger, the boost converter and the lithium cell, three parts that could each fail. The trade-off is that the device is no longer USB-rechargeable.</p>
+      <figure class="wide-fig">
+  <img src="../assets/img/sentry-power.webp" alt="4×AA battery holder wired through an inline rocker switch to the perfboard, with the PIR sensor beside it" width="1400" height="1050" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 3</span> The 4×AA pack runs through an inline switch straight to the board. No charger or voltage converter in between.</figcaption>
+</figure>
+      <h3>A capacitor for the radio</h3>
+      <p>When the ESP32's Wi-Fi radio transmits it pulls short bursts of a few hundred milliamps. AA cells can't deliver that instantly, and the dip can reset the chip right as it tries to send the alert. A 470 µF capacitor across the supply, next to the board, covers those bursts. I picked the 16 V rating over 10 V for margin above the pack's 6.4 V maximum.</p>
+      <h3>Choosing pins</h3>
+      <p>The wake pin had to be RTC-capable, which is why the PIR uses GPIO 33. For the buzzer I first wanted GPIO 35 for an easier trace, but GPIOs 34 to 39 on the ESP32 are input-only and can't drive anything, so it moved to GPIO 27. I also avoided GPIO 12, which can stop the chip from booting if it is pulled HIGH at startup.</p>
+    </section>
+
+    <section class="section">
+      <h2>Building the board</h2>
+      <p>Before soldering I drew the layout hole by hole, with every connection on one side of the ESP32 so only half the board needed wiring. Positive and ground run as bare-wire buses down the edge, and short solder bridges carry each signal from a component to its header pin. The holes on this board are all isolated, so every connection exists only because I soldered it.</p>
+      <div class="fig-pair">
+        <figure>
+  <img src="../assets/img/sentry-headers.webp" alt="Close-up of a row of freshly soldered header socket pins on the perfboard" width="1200" height="1600" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 4</span> Header socket pins soldered along one column.</figcaption>
+</figure>
+        <figure>
+  <img src="../assets/img/sentry-board-bottom.webp" alt="Solder side of the perfboard showing the two rows of header joints and a bare-wire bus running along the edge" width="1200" height="1600" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 5</span> Solder side: both header rows and the bus wire along the edge.</figcaption>
+</figure>
+      </div>
+      <div class="fig-pair">
+        <figure>
+  <img src="../assets/img/sentry-board-top.webp" alt="ESP32 dev board seated in its sockets on the perfboard, with the bus wire visible beside it" width="1200" height="1600" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 6</span> The ESP32 seated in its sockets. It pulls straight out for programming or replacement.</figcaption>
+</figure>
+        <figure>
+  <img src="../assets/img/sentry-board-led.webp" alt="Angled view of the ESP32 on the perfboard with the red status LED and 220 ohm resistor installed" width="1200" height="1600" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 7</span> Status LED and its 220 Ω resistor installed next to the header.</figcaption>
+</figure>
+      </div>
+      <figure class="wide-fig">
+  <img src="../assets/img/sentry-joint-macro.webp" alt="Macro photo of solder joints and component leads on the perfboard" width="1000" height="1333" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 8</span> Close-up of the joints. Before the first power-up I checked every connection with a multimeter's continuity mode, and confirmed there was no short between the power and ground buses.</figcaption>
+</figure>
+    </section>
+
+    <section class="section">
+      <h2>Firmware</h2>
+      <p>The sketch is written in C++ in the Arduino IDE and uses only libraries that ship with the ESP32 board package. Because every run ends in deep sleep, all of the logic lives in <code>setup()</code>, which checks why the chip woke up. A power-on runs the first-boot path: a 60-second PIR warm-up with a slow LED blink, then an "armed" message. A wake from the PIR pin runs the alert path. <code>loop()</code> is never reached.</p>
+      <p>A few details that made it reliable:</p>
+      <ul>
+        <li>The PIR pin gets a pull-down during sleep, so a loose wire reads as "no motion" instead of floating and waking the chip at random.</li>
+        <li>The buzzer and LED pins are held LOW through sleep so they can't drift and click.</li>
+        <li>Before sleeping, the code waits for the PIR output to return LOW, plus a 3-second cooldown. Otherwise the still-HIGH pin would wake the chip immediately.</li>
+        <li>If the cached Wi-Fi channel fails, for example because the router changed channels, it falls back to a normal scan.</li>
+      </ul>
+      <div class="code-block">
+        <div class="code-head"><span>pocket-sentry.ino</span><a href="../assets/code/pocket-sentry.ino" download>Download</a></div>
+        <pre><code>/*
+  Portable Wi-Fi Motion Alarm - ECE 1100 Discovery Project
+  Anish Bhatia
+
+  Board:   &quot;ESP32 Dev Module&quot; (Arduino IDE, &quot;esp32 by Espressif&quot; board package)
+  Wiring:  PIR OUT  -&gt; GPIO 33   (wakes the ESP32 from deep sleep)
+           Buzzer S -&gt; GPIO 27   (KY-012 active buzzer, middle pin unconnected)
+           LED      -&gt; GPIO 26   (through the 220 ohm resistor)
+
+  How it works
+    1. First power-on: waits for the PIR to warm up, connects to Wi-Fi once,
+       sends an &quot;armed&quot; message, then goes to deep sleep.
+    2. Motion makes PIR OUT go HIGH, which wakes the ESP32.
+    3. It beeps, connects to Wi-Fi, sends a Telegram message, and logs how long
+       that took (open Serial Monitor at 115200 to see it while on USB).
+    4. It waits for the PIR to go LOW again, then goes back to deep sleep.
+
+  Before uploading
+    - Fill in the four values in the &quot;Fill these in&quot; block.
+    - In Telegram, open a chat with your bot and send it /start, or it is not
+      allowed to message you.
+    - Switch the battery pack OFF before plugging in USB.
+*/
+
+#include &lt;WiFi.h&gt;
+#include &lt;WiFiClientSecure.h&gt;
+#include &lt;HTTPClient.h&gt;
+#include &quot;esp_sleep.h&quot;
+#include &quot;driver/gpio.h&quot;
+#include &quot;driver/rtc_io.h&quot;
+
+// ---------------- Fill these in ----------------
+const char* WIFI_SSID = &quot;your-wifi-or-hotspot&quot;;
+const char* WIFI_PASS = &quot;your-wifi-password&quot;;
+const char* BOT_TOKEN = &quot;1234567890:replace-with-token-from-BotFather&quot;;
+const char* CHAT_ID   = &quot;123456789&quot;;   // your numeric chat ID from @myidbot
+// ------------------------------------------------
+
+// Pins
+const gpio_num_t PIR_PIN    = GPIO_NUM_33;
+const int        BUZZER_PIN = 27;
+const int        LED_PIN    = 26;
+
+// Timing
+const uint32_t PIR_WARMUP_MS    = 60000;  // HC-SR501 gives false triggers for ~60 s after power-on
+const uint32_t WIFI_TIMEOUT_MS  = 8000;   // give up on a Wi-Fi attempt after this
+const uint32_t CLEAR_TIMEOUT_MS = 30000;  // longest wait for PIR to go LOW before sleeping anyway
+const uint32_t COOLDOWN_MS      = 3000;   // quiet time after PIR clears, avoids instant re-triggers
+
+// Kept in RTC memory, so these survive deep sleep (not a full power-off)
+RTC_DATA_ATTR uint32_t alertCount   = 0;
+RTC_DATA_ATTR int32_t  savedChannel = 0;   // cached Wi-Fi channel for a faster reconnect
+RTC_DATA_ATTR uint8_t  savedBssid[6];      // cached router MAC address
+
+// ---------- Small helpers ----------
+
+void beep(int times, int onMs, int offMs) {
+  for (int i = 0; i &lt; times; i++) {
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(onMs);
+    digitalWrite(BUZZER_PIN, LOW);
+    if (i &lt; times - 1) delay(offMs);
+  }
+}
+
+void blinkLed(int times, int onMs, int offMs) {
+  for (int i = 0; i &lt; times; i++) {
+    digitalWrite(LED_PIN, HIGH);
+    delay(onMs);
+    digitalWrite(LED_PIN, LOW);
+    delay(offMs);
+  }
+}
+
+String urlEncode(const String&amp; s) {
+  const char* hex = &quot;0123456789ABCDEF&quot;;
+  String out;
+  for (size_t i = 0; i &lt; s.length(); i++) {
+    char c = s[i];
+    if (isalnum((unsigned char)c) || c == &#x27;-&#x27; || c == &#x27;_&#x27; || c == &#x27;.&#x27; || c == &#x27;~&#x27;) {
+      out += c;
+    } else {
+      out += &#x27;%&#x27;;
+      out += hex[(c &gt;&gt; 4) &amp; 0x0F];
+      out += hex[c &amp; 0x0F];
+    }
+  }
+  return out;
+}
+
+bool waitForWiFi(uint32_t timeoutMs) {
+  uint32_t start = millis();
+  while (WiFi.status() != WL_CONNECTED &amp;&amp; millis() - start &lt; timeoutMs) {
+    delay(20);
+  }
+  return WiFi.status() == WL_CONNECTED;
+}
+
+// Connects using the cached channel and router if we have them (much faster),
+// and falls back to a normal scan if that fails.
+bool connectWiFi() {
+  WiFi.persistent(false);
+  WiFi.mode(WIFI_STA);
+
+  bool ok = false;
+  if (savedChannel &gt; 0) {
+    WiFi.begin(WIFI_SSID, WIFI_PASS, savedChannel, savedBssid, true);
+    ok = waitForWiFi(WIFI_TIMEOUT_MS / 2);
+    if (!ok) {
+      Serial.println(&quot;Cached Wi-Fi info failed, scanning normally&quot;);
+      WiFi.disconnect(true);
+      delay(50);
+      savedChannel = 0;
+    }
+  }
+
+  if (!ok) {
+    WiFi.begin(WIFI_SSID, WIFI_PASS);
+    ok = waitForWiFi(WIFI_TIMEOUT_MS);
+  }
+  if (!ok) return false;
+
+  savedChannel = WiFi.channel();
+  memcpy(savedBssid, WiFi.BSSID(), 6);
+  return true;
+}
+
+bool sendTelegram(const String&amp; text) {
+  WiFiClientSecure client;
+  client.setInsecure();  // skips certificate checking; fine for a class prototype
+
+  HTTPClient https;
+  String url = String(&quot;https://api.telegram.org/bot&quot;) + BOT_TOKEN +
+               &quot;/sendMessage?chat_id=&quot; + CHAT_ID +
+               &quot;&amp;text=&quot; + urlEncode(text);
+
+  if (!https.begin(client, url)) return false;
+  https.setTimeout(5000);
+  int code = https.GET();
+  if (code != 200) {
+    Serial.printf(&quot;Telegram error: HTTP %d\n&quot;, code);
+    Serial.println(https.getString());  // Telegram explains what was wrong
+  }
+  https.end();
+  return code == 200;
+}
+
+// Waits until the PIR output goes LOW, so sleeping doesn&#x27;t wake us straight back up.
+void waitForClear() {
+  uint32_t start = millis();
+  while (digitalRead(PIR_PIN) == HIGH &amp;&amp; millis() - start &lt; CLEAR_TIMEOUT_MS) {
+    delay(50);
+  }
+  delay(COOLDOWN_MS);
+}
+
+void goToSleep() {
+  digitalWrite(BUZZER_PIN, LOW);
+  digitalWrite(LED_PIN, LOW);
+
+  WiFi.disconnect(true);
+  WiFi.mode(WIFI_OFF);
+
+  // Hold the buzzer and LED pins LOW during sleep so they can&#x27;t float and click.
+  gpio_hold_en((gpio_num_t)BUZZER_PIN);
+  gpio_hold_en((gpio_num_t)LED_PIN);
+  gpio_deep_sleep_hold_en();
+
+  // Wake when PIR OUT goes HIGH. The pull-down keeps it LOW if a wire comes loose.
+  rtc_gpio_pullup_dis(PIR_PIN);
+  rtc_gpio_pulldown_en(PIR_PIN);
+  esp_sleep_enable_ext0_wakeup(PIR_PIN, 1);
+
+  Serial.println(&quot;Sleeping until motion...&quot;);
+  Serial.flush();
+  esp_deep_sleep_start();
+}
+
+// ---------- The two ways the ESP32 can start ----------
+
+void firstBoot() {
+  Serial.println(&quot;\nMotion alarm powered on. Warming up the PIR for 60 s...&quot;);
+
+  // Slow LED blink during warm-up so you can see it isn&#x27;t armed yet.
+  uint32_t start = millis();
+  while (millis() - start &lt; PIR_WARMUP_MS) {
+    blinkLed(1, 100, 900);
+  }
+
+  if (connectWiFi()) {
+    Serial.printf(&quot;Wi-Fi OK, IP %s, channel %d\n&quot;,
+                  WiFi.localIP().toString().c_str(), (int)savedChannel);
+    bool ok = sendTelegram(&quot;Motion alarm armed&quot;);
+    Serial.println(ok ? &quot;Armed message sent&quot; : &quot;Armed message FAILED&quot;);
+    beep(2, 80, 80);  // two short beeps = armed
+  } else {
+    Serial.println(&quot;Wi-Fi FAILED. Check WIFI_SSID / WIFI_PASS. Arming anyway.&quot;);
+    beep(1, 600, 0);  // one long beep = Wi-Fi problem
+  }
+}
+
+void handleMotion() {
+  uint32_t t0 = millis();  // time since wake
+  alertCount++;
+  Serial.printf(&quot;\nMotion! Alert #%lu\n&quot;, (unsigned long)alertCount);
+
+  digitalWrite(LED_PIN, HIGH);
+  beep(1, 150, 0);  // local alarm right away, before Wi-Fi
+
+  bool wifiOk = connectWiFi();
+  uint32_t tWifi = millis() - t0;
+
+  bool sent = false;
+  if (wifiOk) {
+    sent = sendTelegram(&quot;Motion detected (alert #&quot; + String(alertCount) + &quot;)&quot;);
+  }
+  uint32_t tSent = millis() - t0;
+
+  // These are your latency measurements for the &quot;couple seconds&quot; goal.
+  Serial.printf(&quot;Wi-Fi connected after %lu ms\n&quot;, (unsigned long)tWifi);
+  Serial.printf(&quot;Alert %s after %lu ms\n&quot;, sent ? &quot;sent&quot; : &quot;FAILED&quot;, (unsigned long)tSent);
+
+  digitalWrite(LED_PIN, LOW);
+  if (sent) {
+    blinkLed(2, 100, 100);  // two quick blinks = phone alert sent
+  } else {
+    beep(1, 600, 0);        // one long beep = alert failed
+  }
+}
+
+void setup() {
+  // Release the pins we held LOW during sleep before using them again.
+  gpio_hold_dis((gpio_num_t)BUZZER_PIN);
+  gpio_hold_dis((gpio_num_t)LED_PIN);
+  gpio_deep_sleep_hold_dis();
+  rtc_gpio_deinit(PIR_PIN);  // hand the PIR pin back from sleep mode to normal digitalRead
+
+  pinMode(BUZZER_PIN, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(BUZZER_PIN, LOW);
+  digitalWrite(LED_PIN, LOW);
+  pinMode(PIR_PIN, INPUT);
+
+  Serial.begin(115200);
+
+  if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_EXT0) {
+    handleMotion();
+  } else {
+    firstBoot();
+  }
+
+  waitForClear();
+  goToSleep();
+}
+
+void loop() {
+  // Never reached: every run ends in deep sleep, and waking restarts setup().
+}
+</code></pre>
+      </div>
+      <p class="small muted">The Wi-Fi name, password, bot token and chat ID are placeholders here. The real values stay on the device.</p>
+    </section>
+
+    <section class="section">
+      <h2>Debugging</h2>
+      <p>The code compiled the first time. Getting it onto the board and talking to my phone took longer.</p>
+      <h3>No port to upload to</h3>
+      <p>Every COM port Arduino IDE offered failed with a timeout. They were Bluetooth serial ports, and the ESP32 wasn't showing up at all. The first cause was a charge-only USB cable, which carries power but no data. With a data cable, Device Manager showed the board's CP2102 USB chip under "Other devices" with no driver. Installing Silicon Labs' CP210x driver turned it into a real COM port, and the upload went through.</p>
+      <h3>"Chat not found"</h3>
+      <p>The first boot connected to Wi-Fi but Telegram rejected the message with HTTP 400, "chat not found." The token and chat ID were both correct. I had sent <code>/start</code> to the bot I used to look up my ID, not to my own bot, and Telegram won't let a bot message someone who hasn't messaged it first. One tap on Start fixed it.</p>
+      <figure class="wide-fig">
+  <img src="../assets/img/sentry-serial.webp" alt="Serial Monitor output reading: Motion alarm powered on, warming up the PIR for 60 s, Wi-Fi OK, armed message sent, sleeping until motion" width="826" height="397" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 9</span> Serial output from the first successful boot.</figcaption>
+</figure>
+    </section>
+
+    <section class="section">
+      <h2>Results</h2>
+      <p>On its first full test the alarm armed itself and then sent seven motion alerts over about four minutes, one for each time I walked or waved past it, with the status LED lighting on every wake.</p>
+      <div class="fig-pair">
+        <figure>
+          <video class="demo-video" controls muted playsinline preload="metadata" poster="../assets/img/sentry-demo-poster.webp" width="540" height="960">
+            <source src="../assets/img/sentry-demo.mp4" type="video/mp4">
+          </video>
+          <figcaption><span class="fignum">Fig. 10</span> Waving a hand past the sensor wakes the board and the LED lights.</figcaption>
+        </figure>
+        <figure>
+  <img src="../assets/img/sentry-telegram.webp" alt="Telegram chat with the Motion Alarm bot showing Motion alarm armed followed by Motion detected alerts number 1 through 7" width="700" height="776" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 11</span> What arrived on my phone: the armed message, then alerts #1 through #7.</figcaption>
+</figure>
+      </div>
+      <figure>
+  <img src="../assets/img/sentry-closeup.webp" alt="Close-up of the powered perfboard with the red status LED lit and wires running to the sensor, buzzer and battery pack" width="1400" height="1050" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 12</span> Mid-alert: the status LED lit on the perfboard.</figcaption>
+</figure>
+    </section>
+
+    <section class="section">
+      <h2>What's next</h2>
+      <ul>
+        <li><strong>Enclosure.</strong> A 3D-printed case modeled in SolidWorks and printed at the Hive, with a window for the PIR dome, a slot for the switch, a USB cutout for reprogramming, holes for the LED and buzzer, and a battery door.</li>
+        <li><strong>Alert speed.</strong> The firmware already logs trigger-to-sent time. I'm averaging it over repeated runs to check it against the pitch's goal of an alert within a couple of seconds.</li>
+        <li><strong>Battery life.</strong> Measuring sleep current with a multimeter in series with the pack to estimate how many days the AAs last.</li>
+        <li><strong>Range.</strong> Tuning the PIR's sensitivity so it triggers reliably at 3 m without picking up heat from vents or sunlight.</li>
+      </ul>
+    </section>
+    <nav class="pager" aria-label="More projects"><a class="prev" href="rollercoaster.html"><small>← Previous</small><strong>The Witch Next Door: family thrill coaster</strong></a><a class="next" href="scouting-software.html"><small>Next →</small><strong>Scouting and strategy system</strong></a></nav>
+  </div></div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <span>Anish Bhatia · Atlanta, Georgia · <a href="mailto:anishb.atl@gmail.com">anishb.atl@gmail.com</a></span>
+    <nav aria-label="Footer"><a href="../about.html">About</a> <a href="../goals.html">Career Goals</a> <a href="../projects.html">Projects</a> <a href="../research.html">Research</a> <a href="../beyond.html">Beyond Engineering</a> <a href="../resume.html">Resume</a> <a href="https://www.linkedin.com/in/anish-bhatia-733184319/">LinkedIn</a> <a href="https://github.com/Anishatl">GitHub</a></nav>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>

@@ -9,7 +9,7 @@ step and no dependencies. GitHub Pages serves it from the repo root.
 index.html                    Home: hero, highlights, featured projects
 about.html                    Story, experience, education, skills
 projects.html                 All projects (card grid with filters)
-projects/*.html               One page per project (10)
+projects/*.html               One page per project (11)
 research.html                 Beyond the Scan + other papers
 research/beyond-the-scan.html Full research write-up
 beyond.html                   Beyond Engineering: guitar, art, cricket, chess
