@@ -332,3 +332,27 @@ a.card:hover { transform: translateY(-3px); border-color: var(--gold); color: in
 .code-block pre { margin: 0; padding: 14px 16px; max-height: 520px; overflow: auto; font-size: .8rem; line-height: 1.5; tab-size: 2; }
 .code-block pre code { background: none; padding: 0; font-size: inherit; white-space: pre; }
 .demo-video { display: block; width: 100%; max-height: 75vh; border-radius: 10px; border: 1px solid var(--line); background: #000; object-fit: contain; }
+
+/* ---------- long-form data write-ups (explainers, problem/fix blocks, number tables) ---------- */
+.explain { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 10px; padding: 14px 18px; margin: 18px 0; }
+.explain > :first-child { margin-top: 0; }
+.explain > :last-child { margin-bottom: 0; }
+.explain .label { display: block; font: 600 .74rem/1 "Inter", sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-ink); margin-bottom: 8px; }
+.fix { border: 1px solid var(--line); border-radius: 10px; margin: 22px 0; overflow: hidden; background: var(--surface); }
+.fix h3 { margin: 0; padding: 12px 18px; background: var(--surface-2); border-bottom: 1px solid var(--line); font-size: 1.05rem; }
+.fix .row { display: grid; grid-template-columns: 92px 1fr; gap: 0 14px; padding: 10px 18px; border-bottom: 1px solid var(--line); }
+.fix .row:last-child { border-bottom: 0; }
+.fix .row > b { font: 600 .74rem/1.9 "Inter", sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-ink); }
+.fix .row p { margin: 0 0 6px; } .fix .row p:last-child { margin: 0; }
+.fix figure { margin: 4px 18px 16px; }
+@media (max-width: 560px) { .fix .row { grid-template-columns: 1fr; } }
+.numtable { width: 100%; border-collapse: collapse; margin: 14px 0 8px; font-size: .92rem; }
+.numtable th, .numtable td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.numtable th { font-family: "Space Grotesk", sans-serif; font-weight: 600; color: var(--gold-ink); }
+.numtable td.n, .numtable th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.numtable tr.best td { font-weight: 600; }
+.tablewrap { overflow-x: auto; }
+.eq { font: 500 .95rem/1.6 ui-monospace, "SF Mono", Menlo, Consolas, monospace; background: var(--surface-2); border-radius: 8px; padding: 12px 16px; overflow-x: auto; white-space: pre; margin: 14px 0; }
+.toc { columns: 2; column-gap: 28px; padding-left: 20px; margin: 8px 0 0; }
+@media (max-width: 560px) { .toc { columns: 1; } }
+.linkrow { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 28px; }

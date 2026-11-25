@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NBA Lineup &amp; Matchup Lab | Anish Bhatia</title>
+<meta name="description" content="A sports analytics tool that picks the best five-man NBA lineup against any opponent and decides who should guard whom, built from four seasons of play-by-play data with RAPM, a Poisson matchup model and the Hungarian algorithm.">
+<link rel="canonical" href="https://anishbhatia.me/projects/nba-lineup-lab.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="NBA Lineup &amp; Matchup Lab | Anish Bhatia">
+<meta property="og:description" content="Pick the best five-man NBA lineup against any opponent and decide who guards whom, built from four seasons of play-by-play data.">
+<meta property="og:url" content="https://anishbhatia.me/projects/nba-lineup-lab.html">
+<meta property="og:image" content="https://anishbhatia.me/assets/img/og-preview.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B1F3A">
+<link rel="preload" href="../assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/brand/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/brand/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Anish <span>Bhatia</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <ul class="nav" id="site-nav">
+<li><a href="../index.html">Home</a></li>
+<li><a href="../about.html">About</a></li>
+<li><a href="../goals.html">Career Goals</a></li>
+<li><a href="../projects.html" aria-current="page">Projects</a></li>
+<li><a href="../research.html">Research</a></li>
+<li><a href="../beyond.html">Beyond Engineering</a></li>
+<li><a href="../resume.html">Resume</a></li>
+    </ul>
+  </div>
+</header>
+<main id="main">
+<article class="project-page">
+  <div class="wrap"><div class="read">
+    <a class="backlink" href="../projects.html">← All projects</a>
+
+    <header class="project-head">
+      <h1>NBA Lineup &amp; Matchup Lab</h1>
+      <table class="projectmeta"><tbody>
+        <tr><th scope="row">Type</th><td>Individual project</td></tr>
+        <tr><th scope="row">Dates</th><td>Nov 2026</td></tr>
+        <tr><th scope="row">Built with</th><td>Python (pandas, NumPy, SciPy, scikit-learn), PostgreSQL, nba_api, pbpstats, plain JavaScript, GitHub Pages</td></tr>
+        <tr><th scope="row">Links</th><td><a href="https://anishatl.github.io/nba-lineup-matchup-lab/">Live site</a> · <a href="https://github.com/Anishatl/nba-lineup-matchup-lab">Code on GitHub</a></td></tr>
+      </tbody></table>
+    </header>
+    <p class="lede">Pick any NBA team and any opponent, and this tool tells you which five of your players to put on the floor against their five, and who should guard whom. It's built from every possession of four NBA seasons. I wrote the data pipeline, both statistical models, the optimizer and the website, then checked every model against games it had never seen.</p>
+    <div class="linkrow">
+      <a class="btn outline" href="https://anishatl.github.io/nba-lineup-matchup-lab/">Open the live site</a>
+      <a class="btn outline" href="https://github.com/Anishatl/nba-lineup-matchup-lab">View the code</a>
+    </div>
+    <div class="readings" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr))">
+      <div class="reading"><div class="reading-val">3,937</div><div class="reading-unit">NBA games processed, 2023-24 through the current season</div></div>
+      <div class="reading"><div class="reading-val">130,871</div><div class="reading-unit">Stints: stretches where the same ten players were on the floor</div></div>
+      <div class="reading"><div class="reading-val">752,196</div><div class="reading-unit">Defender-vs-scorer matchup records</div></div>
+      <div class="reading"><div class="reading-val">0.361 → 0.389</div><div class="reading-unit">Game-level correlation on an unseen season, RAPM alone vs. RAPM plus matchups</div></div>
+    </div>
+
+    <section class="section">
+      <figure>
+  <img src="../assets/img/nba-gameplan.webp" alt="The Game plan page: Hawks vs. Knicks, the Knicks' five on the left, the Hawks' roster checked below it, and a ranked table of the ten best Hawks lineups with net, scored and allowed ratings" width="1600" height="1000" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 1</span> The Game plan page. Their five is on the left, my roster is below it, and the table ranks every five-man combination from my roster against them.</figcaption>
+</figure>
+    </section>
+
+    <section class="section">
+      <h2>Contents</h2>
+      <ol class="toc">
+        <li><a href="#question">The question</a></li>
+        <li><a href="#crash-course">A crash course in the ideas</a></li>
+        <li><a href="#data">Step 1: Getting the data</a></li>
+        <li><a href="#rapm">Step 2: Rating players with RAPM</a></li>
+        <li><a href="#matchups">Step 3: The matchup model</a></li>
+        <li><a href="#calibration">Step 4: Combining the two</a></li>
+        <li><a href="#optimizer">Step 5: Choosing lineups and assignments</a></li>
+        <li><a href="#site">Step 6: The website</a></li>
+        <li><a href="#findings">What it found</a></li>
+        <li><a href="#lessons">What I learned</a></li>
+      </ol>
+    </section>
+
+    <section class="section" id="question">
+      <h2>The question</h2>
+      <p>Before every game a coaching staff answers two questions. <strong>Which five players do we put on the floor against their best lineup?</strong> And once they're out there, <strong>who guards whom?</strong> Coaches mostly answer from film and instinct. I wanted to answer them from data, for any team in the league, in a way someone could actually use on a laptop before tip-off.</p>
+      <p>The two questions turn out to depend on each other. A lineup's value depends on how well it can match up defensively, and the best matchups depend on which five are out there. So the project has two models feeding one optimizer:</p>
+      <ol>
+        <li>A <strong>player rating model</strong> (RAPM) that measures how much each player helps his team's scoring margin on offense and on defense.</li>
+        <li>A <strong>matchup model</strong> that predicts how many points a specific scorer gets against a specific defender.</li>
+        <li>An <strong>optimizer</strong> that tries every five-man combination from my roster against their five, finds the best defensive assignment for each, and ranks them.</li>
+      </ol>
+      <p>I also set two rules for myself. It had to work for <em>any</em> team, not just my Hawks. And every number on the site had to be tested on games the model had never seen, because a model that only explains the past isn't useful to a coach.</p>
+    </section>
+
+    <section class="section" id="crash-course">
+      <h2>A crash course in the ideas</h2>
+      <p>This project uses a handful of ideas from statistics. If you've never done data analytics, this section is everything you need to follow the rest of the page.</p>
+
+      <h3>Possessions and "per 100"</h3>
+      <p>A <strong>possession</strong> is one team's turn with the ball. It ends with a made shot, a defensive rebound, a turnover or the end of a period. Fast teams have more possessions per game than slow teams, so comparing raw points is unfair. Every rating in this project is <strong>points per 100 possessions</strong>, which is about one game's worth. A team that scores 115 and allows 110 per 100 possessions has a <strong>net rating</strong> of +5.</p>
+
+      <h3>Why plus-minus isn't enough</h3>
+      <p>The simplest way to judge a player is <strong>plus-minus</strong>: the team's points minus the opponent's points while he's on the floor. The problem is that it mixes up a player with everyone around him. A backup who always plays next to the team's superstar will have a great plus-minus without being great himself, and a good player stuck on a bad bench unit will look terrible.</p>
+
+      <h3>Regression: splitting credit fairly</h3>
+      <p>A <strong>regression</strong> is a method for figuring out how much each input contributes to an outcome. Imagine thousands of short stretches of basketball, each with ten known players and a known result. Every player appears in hundreds of different combinations, with different teammates and against different opponents. Regression finds the set of player ratings that best explains all those results at once. Because it sees the backup both with and without the superstar, it can tell their contributions apart.</p>
+
+      <h3>Overfitting and ridge regression</h3>
+      <p>Basketball is extremely noisy. One lucky three-pointer can swing a two-minute stretch by six points. A plain regression tries to explain every bit of that noise and produces wild ratings, like a bench player rated +25 because he got lucky in 40 possessions. That's called <strong>overfitting</strong>: memorizing noise instead of learning the pattern.</p>
+      <p><strong>Ridge regression</strong> fixes this by adding a penalty that pulls every rating toward zero (average). A player only earns a rating far from zero if there's a lot of evidence for it. The size of the penalty is a setting called <strong>alpha</strong>: too small and the model overfits, too large and every player looks average.</p>
+
+      <h3>Cross-validation: testing on unseen data</h3>
+      <p>How do you pick alpha, or know if a model is any good? You hide some data from it. <strong>Cross-validation</strong> splits the data into chunks, trains on all but one, and scores predictions on the hidden chunk. The alpha that predicts hidden data best wins. I split by <em>game</em> rather than by possession, so the model never sees part of a game during training and then gets tested on the rest of it, which would be a kind of cheating. For the final report card, I trained on two full seasons and tested on the following season.</p>
+
+      <h3>Poisson regression</h3>
+      <p>Regular regression assumes effects <em>add up</em>. Points scored in a matchup are counts (0, 2, 3, ...), and effects there naturally <em>multiply</em>: a defender who holds everyone 20% below their usual scoring takes more points away from a 30-point scorer than from a 10-point scorer. <strong>Poisson regression</strong> is designed for counts and works in multiplication. This turned out to matter a lot, as I explain in <a href="#matchups">Step 3</a>.</p>
+
+      <h3>The Hungarian algorithm</h3>
+      <p>Once you know how many points each of your five defenders would allow against each of their five scorers, you have a 5×5 grid. The <strong>assignment problem</strong> is picking one cell in each row and column so the total is as small as possible. The <strong>Hungarian algorithm</strong> solves it exactly. With five players there are only 120 possible assignments, so the website simply checks all of them, which gives the same answer.</p>
+    </section>
+
+    <section class="section" id="data">
+      <h2>Step 1: Getting the data</h2>
+      <p>Everything starts from public NBA data. I used two Python libraries: <strong>nba_api</strong>, which talks to the NBA's stats website, and <strong>pbpstats</strong>, which reads the play-by-play feed (every shot, foul, rebound and substitution) and splits each game into possessions with the ten players on the floor for each one. I stored it all in <strong>PostgreSQL</strong>, a database, so I could ask questions of it with SQL and so later steps never had to download anything again.</p>
+      <table class="numtable"><thead><tr><th>Table</th><th>What it holds</th></tr></thead><tbody>
+        <tr><td><code>games</code></td><td>Every regular-season game, with the official final score</td></tr>
+        <tr><td><code>players</code></td><td>Every player, with height, position and team by season</td></tr>
+        <tr><td><code>stints</code></td><td>Each possession-by-possession stretch with the same ten players: who was on the floor, how many possessions, and how many points each side scored</td></tr>
+        <tr><td><code>matchups</code></td><td>For each game, how many possessions each defender spent guarding each scorer, and how many points that scorer produced</td></tr>
+        <tr><td><code>pipeline_log</code></td><td>Which games each step has finished, so a crashed run can pick up where it stopped</td></tr>
+      </tbody></table>
+      <p>The full pull covers four seasons and took hours, because the NBA's site needs a pause between requests. One command, <code>python scripts/run_pipeline.py</code>, fetches teams, players, games, stints and matchups in order, and can be run again any time to add new games.</p>
+
+      <h3>Setting up</h3>
+      <p>I had never run a database or used git from the command line before, so the first problems were simple ones.</p>
+      <div class="fix">
+        <h3>Installing the wrong database program</h3>
+        <div class="row"><b>Problem</b><p>I installed DataGrip, which is a program for <em>viewing</em> databases, thinking it was the database itself. It opened fine but had nothing to connect to.</p></div>
+        <div class="row"><b>Fix</b><p>Installed the actual PostgreSQL server (version 19) from the official installer, set the password, and created the <code>nba_lab</code> database. One more surprise: when psql asks for a password it shows nothing as you type, which looks broken but is a normal security feature.</p></div>
+        <figure>
+  <img src="../assets/img/nba-datagrip.webp" alt="DataGrip's empty Database Explorer with no connected data source" width="1258" height="820" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 2</span> DataGrip, a database viewer with no database behind it.</figcaption>
+</figure>
+      </div>
+      <div class="fix">
+        <h3>"git is not recognized"</h3>
+        <div class="row"><b>Problem</b><p>My laptop didn't have git, so I couldn't download my own repository. Later, my first commit failed with "Author identity unknown" because git didn't know who I was.</p></div>
+        <div class="row"><b>Fix</b><p>Installed git with Windows' package manager (<code>winget install Git.Git</code>), then set my name and email once with <code>git config --global</code>.</p></div>
+        <div class="fig-pair">
+          <figure>
+  <img src="../assets/img/nba-git-missing.webp" alt="PowerShell error: the term git is not recognized as the name of a cmdlet" width="1256" height="665" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 3</span> No git installed.</figcaption>
+</figure>
+          <figure>
+  <img src="../assets/img/nba-git-identity.webp" alt="Hawks player ratings from a SQL query, followed by a git commit failing with Author identity unknown" width="1263" height="883" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 4</span> First player ratings, then git asking who I am.</figcaption>
+</figure>
+        </div>
+      </div>
+
+      <h3>Making sure the points add up</h3>
+      <p>The most important check in the whole project is simple: <strong>if I add up the points in every stint of a game, do I get the official final score?</strong> If not, the stints are missing something, and every model built on them inherits the error. I wrote <code>check_stints.py</code> to compare the two for any set of games.</p>
+      <div class="fix">
+        <h3>Stints were about 5% short on points</h3>
+        <div class="row"><b>Problem</b><p>My first version added up points by looking for made shots and free throws. On the first five games of 2025-26 the stint totals came up short every time: 123 instead of 125 in one game, 77 instead of 92 in another. About 11 possessions per game were being dropped because pbpstats couldn't tell which five players were on the floor.</p></div>
+        <div class="row"><b>Fix</b><p>Two changes. First, I stopped counting shots and instead took the change in the feed's running score across each possession, which can't miss a point no matter what kind of play scored it. Second, when a possession's lineup was missing, I filled it from the nearest possession in the same period where all ten players were known. After both changes, every possession was kept and all five games matched the official score exactly.</p></div>
+        <div class="fig-pair">
+          <figure>
+  <img src="../assets/img/nba-stints-before.webp" alt="check_stints output before the fix: in-stint points short of the official score, 7 to 11 possessions skipped per game" width="1256" height="798" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 5</span> Before: points kept in stints fall short of the box score.</figcaption>
+</figure>
+          <figure>
+  <img src="../assets/img/nba-stints-after.webp" alt="check_stints output after the fix: in-stint points equal the official score in all five games with zero skipped possessions" width="1268" height="768" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 6</span> After: exact match, nothing skipped.</figcaption>
+</figure>
+        </div>
+      </div>
+      <div class="fix">
+        <h3>"InvalidNumberOfStartersException"</h3>
+        <div class="row"><b>Problem</b><p>Some games crashed entirely, mostly in overtime (period 5). pbpstats figures out who started a period by watching who shows up in the play-by-play. If a player plays a whole overtime without touching the ball in a recorded play, it can't find him and ends up with four starters instead of five.</p></div>
+        <div class="row"><b>Fix</b><p>The NBA also publishes a box score for any time range. I asked it for the first few seconds of the broken period, which lists exactly who was on the floor, and saved those starters to an overrides file that pbpstats reads. The pipeline now does this automatically whenever the error appears.</p></div>
+        <figure>
+  <img src="../assets/img/nba-starters-errors.webp" alt="SQL query of failed games, most of them InvalidNumberOfStartersException in period 5" width="1600" height="319" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 7</span> The failure log, queried from the database. Almost every failure was a missing starter, and almost all in overtime.</figcaption>
+</figure>
+      </div>
+      <div class="fix">
+        <h3>The current season's data was in a different format</h3>
+        <div class="row"><b>Problem</b><p>The NBA's older play-by-play endpoint now returns nothing, so the pipeline reads the newer "live" feed instead. That feed changed slightly for 2026-27, and pbpstats hadn't caught up. 65 games failed with <code>type object 'Rebound' has no attribute 'EventOrderError'</code>, which turned out to be a typo inside the library itself: it tried to raise an error type that doesn't exist. Start-of-period events also arrived with no player ID.</p></div>
+        <div class="row"><b>Fix</b><p>I wrote a small patch file that fixes these in pbpstats when my code starts, without editing the library: a missing player ID now defaults to 0, and the rebound code falls back to a safer way of finding the shot it belongs to. My first patch had a subtle bug. It marked itself "already applied" on a parent class, so child classes inherited the flag and were skipped. Checking the flag only on each class's own attributes fixed that.</p></div>
+        <figure>
+  <img src="../assets/img/nba-live-errors.webp" alt="Failed games by season: 65 games in 2026-27 failing with the Rebound EventOrderError AttributeError" width="1600" height="200" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 8</span> 65 current-season games failing on the library's typo.</figcaption>
+</figure>
+      </div>
+      <div class="fix">
+        <h3>Wasting minutes on data that doesn't exist yet</h3>
+        <div class="row"><b>Problem</b><p>The NBA posts matchup data a day or so after each game. For recent games the request came back empty, and my retry logic tried each one five times with growing waits, so a handful of new games could stall the run for minutes. Separately, my terminal window closed after one multi-hour pull, and I thought I'd have to start over.</p></div>
+        <div class="row"><b>Fix</b><p>An empty matchup response is now treated as "not posted yet": it's logged as failed without retrying, and the next run picks it up. The closed window cost nothing, because the <code>pipeline_log</code> table records every finished game, so re-running the same command skipped straight to what was left.</p></div>
+        <figure>
+  <img src="../assets/img/nba-pull-2026.webp" alt="Pipeline output: stints and matchups steps for 2026-27, 13 matchup games failing with list index out of range, followed by a SQL check showing nearly every game's stints match the official score" width="1600" height="955" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 9</span> An update run: games with no matchup data yet fail fast, and the check at the bottom shows stint totals matching the official score in nearly every game.</figcaption>
+</figure>
+      </div>
+      <div class="fix">
+        <h3>Player names breaking the terminal</h3>
+        <div class="row"><b>Problem</b><p>A SQL query for the Hawks' best lineups crashed with "character with byte sequence 0xc5 0x86 ... has no equivalent in encoding WIN1252." The culprit was Kristaps Porziņģis: Windows' terminal uses an old character set without the letters in his name (or Vít Krejčí's).</p></div>
+        <div class="row"><b>Fix</b><p>Switched the terminal to UTF-8 (<code>chcp 65001</code>) and told PostgreSQL to send UTF-8 (<code>PGCLIENTENCODING=UTF8</code>), then saved that setting permanently. I added the fix to the README for anyone else on Windows.</p></div>
+        <figure>
+  <img src="../assets/img/nba-encoding.webp" alt="The encoding error, then the fix commands, then the Hawks lineup query printing correctly with Porziņģis and Krejčí" width="1600" height="776" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 10</span> The error, the two-line fix, and the query working.</figcaption>
+</figure>
+      </div>
+      <p>The final coverage: in every completed season, the stint totals match the official score exactly in all but one or two games. The table below is generated live on the project's "How it works" page from the database export.</p>
+      <figure class="wide-fig">
+  <img src="../assets/img/nba-coverage.webp" alt="Coverage table by season: games, games with stints, exact score matches and games with matchup data" width="1600" height="500" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 11</span> Data coverage by season.</figcaption>
+</figure>
+    </section>
+
+    <section class="section" id="rapm">
+      <h2>Step 2: Rating players with RAPM</h2>
+      <p><strong>RAPM</strong> (Regularized Adjusted Plus-Minus) is the regression idea from the crash course, applied to stints. It's the same family of model NBA front offices use, and I built it from scratch.</p>
+
+      <h3>Turning basketball into a table</h3>
+      <p>Each stint becomes two rows: one for each team's offense. Every player in the league gets two columns, an offense column and a defense column. In a row, the five offensive players get a 1 in their offense column, the five defenders get a 1 in their defense column, and everyone else gets 0. The value to predict is that offense's points per 100 possessions in the stint.</p>
+      <div class="tablewrap"><table class="numtable"><thead><tr><th>Row</th><th class="n">Young (O)</th><th class="n">Johnson (O)</th><th class="n">…</th><th class="n">Brunson (D)</th><th class="n">Hart (D)</th><th class="n">…</th><th class="n">Home</th><th class="n">Pts/100</th></tr></thead><tbody>
+        <tr><td>Hawks on offense</td><td class="n">1</td><td class="n">1</td><td class="n">…</td><td class="n">1</td><td class="n">1</td><td class="n">…</td><td class="n">1</td><td class="n">125.0</td></tr>
+        <tr><td>Knicks on offense</td><td class="n">0</td><td class="n">0</td><td class="n">…</td><td class="n">0</td><td class="n">0</td><td class="n">…</td><td class="n">0</td><td class="n">100.0</td></tr>
+      </tbody></table></div>
+      <p class="small muted">A simplified example of one stint (the Knicks row has 1s in the Knicks' offense columns and the Hawks' defense columns, not shown).</p>
+      <p>With four seasons that's over 260,000 rows, and with about 860 players, roughly 1,700 columns. The regression finds one number per column:</p>
+      <div class="eq">points per 100 = league average + home edge
+                + (sum of the 5 offensive players' O ratings)
+                + (sum of the 5 defenders' D ratings)</div>
+      <p>A player's offensive rating is how many points per 100 his presence adds to his team's offense. His defensive rating is how many he adds to the <em>opponent's</em> offense, so for defense, negative is good. On the website I flip the sign so that higher is better on both ends.</p>
+
+      <h3>Choices I made</h3>
+      <ul>
+        <li><strong>Weighting by possessions.</strong> A 20-possession stint tells you more than a 1-possession stint, so each row counts in proportion to its possessions.</li>
+        <li><strong>Recency.</strong> Players change, so last season counts half as much as this one, the season before counts a quarter, and so on.</li>
+        <li><strong>One penalty for everyone.</strong> I used a single alpha for offense and defense rather than tuning them separately, which keeps the model simple and harder to overfit.</li>
+        <li><strong>Home court</strong> gets its own column that's effectively not penalized, so home advantage isn't credited to players. The model puts it at about +1.7 points per 100.</li>
+      </ul>
+
+      <h3>Did it work?</h3>
+      <p>I trained on 2023-24 and 2024-25, then predicted every game of 2025-26 using only the players on the floor. The baseline guesses the league average every time. Raw plus-minus and RAPM use each player's rating from the training seasons.</p>
+      <div class="tablewrap"><table class="numtable"><thead><tr><th>Predictor</th><th class="n">Game error (RMSE)</th><th class="n">Correlation with actual margin</th></tr></thead><tbody>
+        <tr><td>League average (no information)</td><td class="n">16.66</td><td class="n">−0.03</td></tr>
+        <tr><td>Raw plus-minus</td><td class="n">15.99</td><td class="n">0.29</td></tr>
+        <tr class="best"><td>RAPM</td><td class="n">15.61</td><td class="n">0.34</td></tr>
+      </tbody></table></div>
+      <div class="explain"><span class="label">In plain terms</span><p><strong>RMSE</strong> is the typical size of a miss, so lower is better. <strong>Correlation</strong> runs from 0 (no relationship) to 1 (perfect). A correlation of 0.34 on next season's games might sound low, but single NBA games are close to a coin flip with a lot of noise. The point is that RAPM clearly beats both the naive guess and raw plus-minus on games it never saw.</p></div>
+      <figure class="wide-fig">
+  <img src="../assets/img/nba-rapm-validation.webp" alt="Terminal output of the RAPM validation: error for each alpha from 100 to 31,623, best around 3,162, then the baseline, raw plus-minus and RAPM comparison" width="812" height="575" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 12</span> Choosing alpha. Error drops as the penalty grows, bottoms out near 3,162, then rises again as the model becomes too cautious.</figcaption>
+</figure>
+    </section>
+
+    <section class="section" id="matchups">
+      <h2>Step 3: The matchup model</h2>
+      <p>RAPM says how good a player is overall. It can't say whether Dyson Daniels should guard Jalen Brunson or Karl-Anthony Towns. For that I used the NBA's matchup data: for every game, how many possessions each defender spent on each scorer, and how many points the scorer produced. That's 752,196 records across four seasons.</p>
+      <p>The model predicts the points a scorer produces per matchup possession from three kinds of inputs:</p>
+      <ul>
+        <li><strong>A scorer rating</strong> for each player: how dangerous he is to guard.</li>
+        <li><strong>A defender rating</strong> for each player: how much he suppresses whoever he guards.</li>
+        <li><strong>Size and style terms.</strong> One grows with the squared height difference between scorer and defender (a big mismatch either way hurts the defender). The other captures that tall defenders matter more against three-point shooters.</li>
+      </ul>
+
+      <div class="fix">
+        <h3>An additive model made every assignment equal</h3>
+        <div class="row"><b>Problem</b><p>My first matchup model was a normal (additive) ridge regression: points = scorer rating + defender rating. Then I realized what that means for assignments. If every defender adds a fixed amount no matter who he guards, then the total for five defenders on five scorers is the same however you pair them up. The assignment question became meaningless, apart from the small size terms.</p></div>
+        <div class="row"><b>Fix</b><p>I switched to Poisson regression, where effects multiply: predicted points = league rate × scorer factor × defender factor × size factor. Now a defender who cuts scoring by 20% saves more against a star than against a role player, which matches basketball intuition and makes pairings matter. It also predicted held-out games better.</p></div>
+      </div>
+      <div class="fix">
+        <h3>The solver wouldn't finish</h3>
+        <div class="row"><b>Problem</b><p>scikit-learn's built-in Poisson regression uses an iterative method (L-BFGS) that inches toward the answer. With 860 players and very weak penalties it hit its iteration limit over and over, printing pages of "failed to converge" warnings, and its answers weren't trustworthy.</p></div>
+        <div class="row"><b>Fix</b><p>I wrote my own solver using Newton's method (also called IRLS). Instead of inching downhill, each step fits a weighted ridge regression that jumps almost straight to the bottom, using the curvature of the problem. It converges in a handful of steps. I also grouped identical rows (same scorer, defender, season and team) before fitting, cutting 744,388 rows to 464,517.</p></div>
+        <figure>
+  <img src="../assets/img/nba-lbfgs.webp" alt="Terminal flooded with ConvergenceWarning: lbfgs failed to converge after 1000 iterations" width="1256" height="1143" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 13</span> The built-in solver giving up.</figcaption>
+</figure>
+      </div>
+
+      <h3>Validation</h3>
+      <p>Same test as before: train on two seasons, predict the third. Here the predictions are per scorer–defender pair.</p>
+      <div class="tablewrap"><table class="numtable"><thead><tr><th>Model</th><th class="n">Deviance (lower is better)</th><th class="n">Pair correlation</th></tr></thead><tbody>
+        <tr><td>League average</td><td class="n">0.447</td><td class="n">0.01</td></tr>
+        <tr><td>Additive (linear), full</td><td class="n">0.428</td><td class="n">0.355</td></tr>
+        <tr><td>Poisson: scorer only</td><td class="n">0.434</td><td class="n">0.342</td></tr>
+        <tr><td>Poisson: scorer + defender</td><td class="n">0.427</td><td class="n">0.366</td></tr>
+        <tr class="best"><td>Poisson: full (+ size and style)</td><td class="n">0.423</td><td class="n">0.363</td></tr>
+      </tbody></table></div>
+      <div class="explain"><span class="label">In plain terms</span><p><strong>Deviance</strong> is the right error measure for count data, like RMSE for ordinary numbers. Adding defenders to a scorer-only model clearly helps, which means defenders really do change how much their man scores. The full Poisson model has the lowest deviance of all. Size effects are real too: each unit of mismatch adds about 5.7% to the scorer's output.</p></div>
+      <figure class="wide-fig">
+  <img src="../assets/img/nba-matchup-validation.webp" alt="Matchup model run: alpha search with cross-validated deviance, size effects, the validation comparison of linear and Poisson models, and calibration results" width="1203" height="1190" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 14</span> One full matchup run: choosing alpha, the validation table, and the calibration step from Step 4.</figcaption>
+</figure>
+
+      <h3>When the numbers looked too good</h3>
+      <p>The model's first defender rankings didn't pass a sanity check. Amen Thompson supposedly cut his man's scoring by 41%. Shai Gilgeous-Alexander supposedly scored 140% more than an average player. Nobody is that extreme.</p>
+      <div class="fix">
+        <h3>Inflated percentages</h3>
+        <div class="row"><b>Problem</b><p>Ratings were measured against a "zero" player that doesn't exist, rather than against an average player. On top of that, a team's scheme gets blamed on its individual defenders: on a team with great help defense, everyone's man scores less.</p></div>
+        <div class="row"><b>Fix</b><p>First, I re-centered every effect on the possession-weighted average player, which brought SGA down from +140% to a believable +86%. Second, I added a context term for each defending team and season to soak up scheme and help, used only during fitting. I tried an offensive context term too, but it stole credit from star scorers (it decided the Thunder's offense was good, not SGA), so I kept only the defensive one.</p></div>
+        <div class="fig-pair">
+          <figure>
+  <img src="../assets/img/nba-inflated.webp" alt="First defender ranking: Amen Thompson at minus 41 percent, and scorers like Shai Gilgeous-Alexander at plus 140 percent" width="1232" height="890" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 15</span> Before: implausible percentages.</figcaption>
+</figure>
+          <figure>
+  <img src="../assets/img/nba-calibrated.webp" alt="Later run: help and rim defenders list, re-centered scorer list with SGA at plus 86.5 percent, and team defensive context effects by team and season" width="1230" height="1112" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 16</span> After: re-centered scorers, flagged help defenders, and team scheme effects.</figcaption>
+</figure>
+        </div>
+      </div>
+      <div class="fix">
+        <h3>The best defenders in the league looked bad</h3>
+        <div class="row"><b>Problem</b><p>Victor Wembanyama and Rudy Gobert, two of the best defenders alive, rated <em>below</em> average one-on-one (their man scored 48% more). Meanwhile some players with great one-on-one numbers had weak overall defensive ratings.</p></div>
+        <div class="row"><b>Fix</b><p>This is a real limitation of matchup data, not a bug. Rim protectors leave their own man to block other players' shots, so their "assigned" man gets open looks, while their real value shows up in RAPM. And good scorers often get switched away from strong defenders, so some defenders rarely face the ball. Instead of trusting one-on-one numbers alone, I rank defenders by <strong>points saved</strong>, which combines defensive RAPM and the matchup rating using the weights from Step 4. The site flags the disagreements: <strong>Help / rim</strong> for strong defenders whose value doesn't show one-on-one, and <strong>Switched off</strong> for great one-on-one numbers with weak overall impact.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="calibration">
+      <h2>Step 4: Combining the two</h2>
+      <p>Now there are two models that each say something about a lineup. How much should each count? Instead of guessing, I let held-out data decide. For every stint in a test season I computed the lineup's RAPM offense, its RAPM defense, and the matchup model's best-assignment defense, then fit:</p>
+      <div class="eq">points per 100 = 111.8
+                + 0.55 × (offense RAPM)
+                + 0.45 × (defense RAPM)
+                + 0.13 × (matchup defense)
+                + 1.5  × (home)</div>
+      <div class="explain"><span class="label">In plain terms</span><p>The weights below 1 say that summing raw RAPM ratings overshoots real results by about 2×, which is normal for a heavily penalized model. The matchup weight is small but positive: it adds information RAPM doesn't have. Game-level correlation on the test season rose from <strong>0.361</strong> with RAPM alone to <strong>0.389</strong> with matchups added, and error dropped from 15.50 to 15.31. I didn't let the matchup weight go negative, which would have rewarded bad defense.</p></div>
+      <p>Every lineup on the site is scored with this formula. The <strong>Defensive emphasis</strong> slider changes how much points allowed count against points scored, and <strong>Size effects</strong> scales the height terms, for coaches who expect lots of switching.</p>
+    </section>
+
+    <section class="section" id="optimizer">
+      <h2>Step 5: Choosing lineups and assignments</h2>
+      <p>The optimizer is where everything comes together. Given my roster (up to 15 players) and their five:</p>
+      <ol>
+        <li>List every five-man combination. Twelve players give 792 combinations.</li>
+        <li>For each one, build the 5×5 grid of predicted points: each of my players guarding each of theirs.</li>
+        <li>Solve the assignment problem to find the pairing that allows the fewest points. In Python I used SciPy's Hungarian algorithm; in the browser it checks all 120 pairings, which gives the same answer.</li>
+        <li>Score the lineup with the calibrated formula and rank them all.</li>
+      </ol>
+      <p>That's about 95,000 assignments for a 12-man roster, which runs instantly. I built a command-line version first to test the logic before building any website.</p>
+      <div class="fix">
+        <h3>"Daniels" matched two players</h3>
+        <div class="row"><b>Problem</b><p>The command line lets you type last names, like <code>--assign Daniels=Brunson</code>. "Daniels" matched both Dyson Daniels and Jaden McDaniels, since one name contains the other, so the tool stopped.</p></div>
+        <div class="row"><b>Fix</b><p>Name matching now prefers players in the relevant lineup or roster first, then exact last-name matches over partial ones. It only asks for more detail when there's real ambiguity.</p></div>
+        <figure>
+  <img src="../assets/img/nba-daniels.webp" alt="plan_matchup error: Daniels matched 2 players (Jaden McDaniels, Dyson Daniels). Be more specific." width="1262" height="350" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 17</span> The name collision.</figcaption>
+</figure>
+      </div>
+      <figure class="wide-fig">
+  <img src="../assets/img/nba-assign-cli.webp" alt="Command-line output comparing a hand-picked assignment (net minus 2.4) with the optimal assignment for the same five (net minus 1.7)" width="1277" height="546" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 18</span> The command-line version: my hand-picked matchups against the Knicks give up 0.7 points per 100 compared with the optimal assignment.</figcaption>
+</figure>
+    </section>
+
+    <section class="section" id="site">
+      <h2>Step 6: The website</h2>
+      <p>I'd used Streamlit for an earlier project and found it slow and buggy, so I built this as a plain static website: HTML, CSS and JavaScript with no framework and no build step, hosted free on GitHub Pages. The models run once in Python, an export script writes the results to a few JSON files, and the browser does the lineup search itself. That keeps the site fast and free to host, and makes it easy to move to a custom domain later.</p>
+      <p>Because the browser re-implements the scoring and assignment logic in JavaScript, I generated test cases from the Python version and checked that the JavaScript gives the same answers. All 65 matched on real data.</p>
+
+      <h3>The pages</h3>
+      <p><strong>Game plan</strong> (Fig. 1) ranks every lineup from your roster against their five. Clicking a lineup shows the best defensive assignment and the runner-up, with how many points separate them.</p>
+      <figure class="wide-fig">
+  <img src="../assets/img/nba-assignments.webp" alt="Who guards whom panel: two assignment options for the best Hawks lineup, each card showing a defender, the scorer he guards, and predicted points per 100 matchup possessions" width="1600" height="606" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 19</span> The top two assignments. Swapping Daniels and Alexander-Walker between Anunoby and Bridges costs only 0.06 points per 100 after calibration.</figcaption>
+</figure>
+      <p><strong>Sandbox</strong> lets a coach test their own idea. Pick any five, set each matchup, and it tells you what your setup is worth and how much it gives up against the best assignment for the same players. A half-court diagram shows the pairings, with non-optimal ones highlighted.</p>
+      <div class="fig-pair">
+        <figure>
+  <img src="../assets/img/nba-sandbox.webp" alt="Sandbox page with a non-optimal assignment: net minus 8.8, giving up 5.08 points per 100 versus the best assignment, with the changed matchups in red" width="1600" height="1000" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 20</span> A bad idea, quantified: Okongwu on Brunson and McCollum on Towns gives up 5 points per 100.</figcaption>
+</figure>
+        <figure>
+  <img src="../assets/img/nba-court.webp" alt="Half-court diagram with Knicks players as outlined circles and Hawks defenders as red circles, dashed lines showing who guards whom" width="1600" height="1256" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 21</span> The court view. Orange lines mark matchups that differ from the optimum.</figcaption>
+</figure>
+      </div>
+      <p><strong>Players</strong> lists every player's RAPM, points saved, one-on-one ratings and flags, sortable and searchable. <strong>Teams</strong> is a one-page scouting report with a <strong>lineup luck check</strong>: it compares each of a team's most-used lineups with what the model expects from those five players.</p>
+      <figure class="wide-fig">
+  <img src="../assets/img/nba-players.webp" alt="Player ratings table sorted by RAPM: Wembanyama, Gilgeous-Alexander, Leonard, Edey and others, with Help/rim and Switched off flags" width="1600" height="1000" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 22</span> The player table, with Help / rim and Switched off flags.</figcaption>
+</figure>
+      <div class="fix">
+        <h3>The luck check flagged almost everything</h3>
+        <div class="row"><b>Problem</b><p>My first version flagged a lineup as "running hot" or "running cold" whenever its actual net rating was more than one standard error from expected. It flagged 37% of lineups. But with a ±1 standard error band, about a third of lineups land outside by pure chance, so most of those flags were noise. The expected values were also too extreme, because they summed raw RAPM ratings.</p></div>
+        <div class="row"><b>Fix</b><p>Expected ratings now use the calibrated weights from Step 4. The noise band is calculated from each lineup's actual possessions, and a lineup is only flagged if it falls outside a 90% band, so pure chance flags about 1 in 10. Now most lineups correctly read "within noise," and the ones that are flagged are worth a coach's attention.</p></div>
+        <figure>
+  <img src="../assets/img/nba-luck-check.webp" alt="Hawks lineup luck check: actual, expected, gap and noise for 15 lineups, with a dot-on-band chart, mostly within noise and one running cold" width="1600" height="1100" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 23</span> The Hawks' lineup luck check. Big gaps in small samples still read "within noise."</figcaption>
+</figure>
+      </div>
+      <div class="fix">
+        <h3>Dropdowns showed the whole league</h3>
+        <div class="row"><b>Problem</b><p>Picking a player for the opponent's five opened a list of every player in the NBA, ordered by playing time, so finding a Knick meant scrolling past Kevin Durant and Nikola Jokić.</p></div>
+        <div class="row"><b>Fix</b><p>Each dropdown now lists only that team's roster, A to Z. To test a trade or signing you can still type any player's name into "Add any player."</p></div>
+        <figure>
+  <img src="../assets/img/nba-dropdown-bug.webp" alt="The live Game plan page with a player dropdown open, listing players from every team" width="1600" height="966" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 24</span> The original dropdown: the whole league, not the Knicks.</figcaption>
+</figure>
+      </div>
+      <p>Last, I added a <strong>How it works</strong> page that shows the validation and coverage numbers straight from the data, and a <strong>How to use</strong> page that walks through every feature step by step for someone who has never seen the site. Every view is saved in the page's address, so a coach can share an exact game plan as a link.</p>
+      <figure class="wide-fig">
+  <img src="../assets/img/nba-guide.webp" alt="How to use page with a three-step quick start and numbered steps for the Game plan page" width="1600" height="1000" loading="lazy" decoding="async">
+  <figcaption><span class="fignum">Fig. 25</span> The How to use page.</figcaption>
+</figure>
+    </section>
+
+    <section class="section" id="findings">
+      <h2>What it found</h2>
+      <ul>
+        <li><strong>Who's on the floor matters much more than who guards whom.</strong> Changing the lineup moves net rating by several points per 100. Changing assignments within a lineup usually moves it by tenths of a point, unless you do something badly wrong (Fig. 20).</li>
+        <li><strong>Defenders genuinely change their man's scoring.</strong> Adding defender ratings to a scorer-only model improved predictions on an unseen season, so one-on-one defense is a real, measurable skill.</li>
+        <li><strong>Size mismatches cost points.</strong> Height mismatches in either direction raise the scorer's output, and tall defenders matter more against three-point shooters.</li>
+        <li><strong>One-on-one data misses rim protection.</strong> The league's best help defenders look average or worse in matchup data, so a good defensive ranking has to combine both views.</li>
+        <li><strong>Matchups add real information.</strong> Adding them to RAPM improved game predictions on a held-out season by about 8% in correlation terms.</li>
+      </ul>
+    </section>
+
+    <section class="section" id="lessons">
+      <h2>What I learned</h2>
+      <ul>
+        <li><strong>Check the data against something official before modeling.</strong> The score check caught a 5% point loss that would have quietly biased every rating.</li>
+        <li><strong>If a result looks too good, it's probably wrong.</strong> The −41% defender and +140% scorer sent me back to find two real modeling problems.</li>
+        <li><strong>The model's structure is a decision, not a detail.</strong> An additive model made the central question meaningless. Thinking about what the math implies, before trusting its output, mattered more than any tuning.</li>
+        <li><strong>Always test on data the model hasn't seen.</strong> Every claim on the site is backed by a train-on-two-seasons, test-on-the-next comparison.</li>
+        <li><strong>Build for the user.</strong> The dropdown, luck-check and How to use changes came from using the tool the way a coach would.</li>
+      </ul>
+      <h3>What's next</h3>
+      <ul>
+        <li>Weekly automatic data updates through a scheduled GitHub Action.</li>
+        <li>Modeling switches directly, so assignments that are likely to get switched are scored more realistically.</li>
+        <li>Adding playoff data and comparing how lineups hold up when the opponent has time to game-plan.</li>
+      </ul>
+      <p><a href="https://github.com/Anishatl/nba-lineup-matchup-lab">The full code, with a README that documents every step</a>, is on GitHub, and the <a href="https://anishatl.github.io/nba-lineup-matchup-lab/">live site</a> works for every team.</p>
+    </section>
+    <nav class="pager" aria-label="More projects"><a class="next" href="blitz.html"><small>Next →</small><strong>Blitz: 2026 competition robot</strong></a></nav>
+  </div></div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <span>Anish Bhatia · Atlanta, Georgia · <a href="mailto:anishb.atl@gmail.com">anishb.atl@gmail.com</a></span>
+    <nav aria-label="Footer"><a href="../about.html">About</a> <a href="../goals.html">Career Goals</a> <a href="../projects.html">Projects</a> <a href="../research.html">Research</a> <a href="../beyond.html">Beyond Engineering</a> <a href="../resume.html">Resume</a> <a href="https://www.linkedin.com/in/anish-bhatia-733184319/">LinkedIn</a> <a href="https://github.com/Anishatl">GitHub</a></nav>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>
