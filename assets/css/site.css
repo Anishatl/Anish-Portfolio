@@ -217,6 +217,37 @@ a.card:hover { transform: translateY(-3px); border-color: var(--gold); color: in
 .pager strong { font-family: "Space Grotesk", sans-serif; }
 @media (max-width: 560px) { .pager { grid-template-columns: 1fr; } .pager .next { grid-column: 1; } }
 
+/* Project pages on a laptop: the page shell takes the window, while running
+   text keeps a readable line length. Everything structural -- the spec table,
+   the stat row, figures, the rules under each h2, the pager -- spans the full
+   width; paragraphs are capped instead of the column, so they stay the width
+   they already are. Nothing here applies below 1040px, so phones and tablets
+   keep the single centred column they have now. */
+@media (min-width: 1040px) {
+  /* the column cap comes off, so the content now fills the same shell the
+     header and footer already use and lines up with the nav above it */
+  .project-page .read { max-width: none; }
+
+  .project-page .lede,
+  .project-page .section > p,
+  .project-page .section > ul,
+  .project-page .section > ol,
+  .project-page .section > .note,
+  .project-page .fix .row p { max-width: 78ch; }
+  .project-page figcaption { max-width: 92ch; }
+
+  /* Each image sizes itself instead of being stretched to the column. A wide
+     screenshot fills the width; a tall or squarish photo stops at the 75vh
+     ceiling and centres, rather than being pinned to the full width and
+     letterboxed between grey bars inside its own frame. */
+  .project-page .wide-fig { max-width: none; }
+  .project-page figure { display: flex; flex-direction: column; align-items: center; }
+  .project-page figure img { width: auto; height: auto; max-width: 100%; }
+  .project-page figcaption { max-width: min(78ch, 100%); align-self: center; text-align: center; }
+  .project-page .fig-pair { gap: 24px; }
+  .project-page .projectmeta th { width: 150px; }
+}
+
 /* ---------- gallery (art) ---------- */
 .gallery { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 .gallery figure { margin: 0; }
